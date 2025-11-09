@@ -4,7 +4,7 @@
   "mode": 1,
   "bluetooth_enabled": true,
   "college": "penn_state",
-  "college_spirit_enabled": true,
+  "college_spirit_enabled": false,
   "ufo_persistent_memory": true,
   "meditate_adaptive_timing": true,
   "meditate_ultra_dim": true,
