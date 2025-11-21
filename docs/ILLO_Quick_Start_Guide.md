@@ -37,7 +37,7 @@
 | **🧠 AI Intelligence**         | 1 (Default)    | 1 purple         | Interactive AI companion that learns and adapts | Touch/tap to wake AI, shake for turbulence, wave hand for interaction |
 | **🌌 Intergalactic Cruising**  | 2              | 2 green          | Ambient lighting with auto-brightness           | Bluetooth control via Adafruit Bluefruit Connect app                  |
 | **🧘 Meditate**                | 3              | 3 blue           | Relaxation breathing patterns (4 techniques)    | Interactions disabled, ultra-dim option available                     |
-| **🕺 Dance Party**             | 4              | 4 orange         | Beat detection and music-reactive light shows   | Music synchronization, enhanced with steady beat music                |
+| **🕺 Dance Party**             | 4              | 4 orange         | Advanced audio visualizer with multi-device sync | Frequency-based rotation, fade trails, BLE leader/follower synchronization |
 
 ### Mode Settings for Each Routine (Button B)
 
@@ -46,7 +46,7 @@
 | **🧠 AI Intelligence**        | Rainbow wheel                                | Pink colors                | Blue colors                | Green colors             |
 | **🌌 Intergalactic Cruising** | Rainbow wheel                                | Pink colors                | Blue colors                | Green colors             |
 | **🧘 Meditate**               | 4-7-8 breathing (inhale 4, hold 7, exhale 8) | Box breathing (4-4-4-4)    | Triangle breathing (4-4-8) | Deep relaxation          |
-| **🕺 Dance Party**            | Leader (broadcasts)                          | Follower (syncs to leader) | Reserved for future use    | Reserved for future use  |
+| **🕺 Dance Party**            | Leader (audio visualizer + BLE broadcast)    | Follower (mirrors leader)  | Follower (mirrors leader)  | Follower (mirrors leader) |
 
 ---
 
@@ -120,11 +120,31 @@ Enabling it may cause system instability or crashes.
 
 ---
 
-## 📱 Bluetooth Control (Intergalactic Cruising Only)
+## 🕺 Dance Party Multi-Device Sync
 
-### Setup
+### Leader/Follower Architecture
 
-1. Switch to **Intergalactic Cruising mode** (Button A until mode 2)
+Dance Party mode features an advanced audio visualizer with BLE synchronization:
+
+**Leader Mode (Mode 1):**
+- Analyzes audio frequency in real-time
+- Displays rotating pixel patterns based on detected frequency
+- Fade/persistence effects create smooth visual trails
+- Broadcasts visual state to followers via BLE (12.5 times per second)
+- Falls back to idle comet animation when no audio detected
+
+**Follower Modes (Modes 2-4):**
+- Scans for leader BLE advertisements
+- Mirrors leader's visual display in near real-time
+- Smoothed transitions for natural-looking synchronization
+- Automatic leader loss detection and recovery
+- No audio processing required (silent operation)
+
+### Responsiveness Tuning
+
+Adjust sync performance using preset modes (requires code modification):
+
+1. Switch to **Intergalactic Cruising mode** (Button A until Routine 2)
 2. Open **Adafruit Bluefruit Connect** app on your phone
 3. Look for a device named **ILLO_x** (where x is your device name)
 4. Connect via **UART** feature
