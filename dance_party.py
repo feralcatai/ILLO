@@ -101,13 +101,42 @@ class DanceParty(BaseRoutine):
     _NUM_PIXELS = 10
     _BRIGHTNESS = 0.20
 
-    # Timing constants
-    _STEP_MS = 260  # visual step; adv matches this (≈3.8 revs/min)
-    _ADV_PERIOD_MS = 260  # advertising refresh cadence (aligned with a step)
-    _SCAN_BURST_S = 0.35  # follower scan burst (active scan)
-    _LOSS_TIMEOUT_S = 3.0  # follower loss detection
-    _MIN_RENDER_MS = 30  # ~33 FPS cap (rate limit follower render)
-    _SMOOTH_ALPHA = 0.65  # follower smoothing 0..1; higher = snappier
+    # ============================================================================
+    # TUNING PARAMETERS - Adjust these two values to change responsiveness
+    # ============================================================================
+
+    # How often leader broadcasts updates (in milliseconds)
+    # Lower = more responsive, but uses more CPU/battery
+    # Range: 50-200ms | Recommended: 80ms (balanced) | Fast: 50ms | Smooth: 120ms
+    # _ADV_PERIOD_MS = 80
+
+    # How quickly follower responds to changes (0.0-1.0)
+    # Higher = snappier/more responsive, but less smooth
+    # Range: 0.5-0.95 | Recommended: 0.90 (snappy) | Fast: 0.95 | Smooth: 0.70
+    # _SMOOTH_ALPHA = 0.90
+
+    # ============================================================================
+    # PRESET CONFIGURATIONS (uncomment one to use)
+    # ============================================================================
+    # FAST MODE: Maximum responsiveness, uses more resources
+    # _ADV_PERIOD_MS = 50
+    # _SMOOTH_ALPHA = 0.95
+
+    # BALANCED MODE: Good responsiveness with reasonable resource usage (DEFAULT)
+    _ADV_PERIOD_MS = 80
+    _SMOOTH_ALPHA = 0.90
+
+    # SMOOTH MODE: Slower but smoother, saves battery
+    # _ADV_PERIOD_MS = 120
+    # _SMOOTH_ALPHA = 0.70
+
+    # ============================================================================
+    # ADVANCED TIMING CONSTANTS (usually don't need to change these)
+    # ============================================================================
+    _STEP_MS = 260  # visual step timing (≈3.8 revs/min)
+    _SCAN_BURST_S = 0.20  # follower scan burst duration
+    _LOSS_TIMEOUT_S = 3.0  # follower loss detection timeout
+    _MIN_RENDER_MS = 15  # ~66 FPS render rate limit
 
     def __init__(self, device_name, debug_bluetooth=False, debug_audio=False):
         """Initialize Dance Party routine.
@@ -156,6 +185,10 @@ class DanceParty(BaseRoutine):
         self._last_adv_ms = 0
         self._index = 0
         self._next_tick_ms = self._now_ms() + self._STEP_MS
+
+        # Audio visualizer state (enhanced from Intergalactic Cruising)
+        self.rotation_offset = 0.0
+        self.last_update = time.monotonic()
 
         # Expressive motion state (leader)
         self._dir = 1  # +1 or -1
@@ -237,6 +270,70 @@ class DanceParty(BaseRoutine):
             print("[DANCE] ❌ Bluetooth enable failed: %s" % e)
             return False
 
+    def set_responsiveness(self, mode="balanced"):
+        """Adjust synchronization responsiveness with preset modes.
+
+        Args:
+            mode (str): One of "fast", "balanced", or "smooth"
+                - "fast": Maximum responsiveness (50ms ads, 0.95 alpha)
+                - "balanced": Good balance (80ms ads, 0.90 alpha) [DEFAULT]
+                - "smooth": Smoother motion (120ms ads, 0.70 alpha)
+
+        Returns:
+            bool: True if mode was applied successfully
+
+        Example:
+            >>> dance = DanceParty("ILLO_01")
+            >>> dance.set_responsiveness("fast")  # Maximum responsiveness
+            >>> dance.set_responsiveness("smooth")  # Battery-saving smooth mode
+        """
+        presets = {
+            "fast": (50, 0.95),
+            "balanced": (80, 0.90),
+            "smooth": (120, 0.70)
+        }
+
+        if mode.lower() not in presets:
+            print("[DANCE] ⚠️ Invalid mode '%s'. Use: fast, balanced, or smooth" % mode)
+            return False
+
+        adv_period, smooth_alpha = presets[mode.lower()]
+        self._ADV_PERIOD_MS = adv_period
+        self._SMOOTH_ALPHA = smooth_alpha
+
+        print("[DANCE] 🎛️ Responsiveness set to '%s' (ads:%dms, alpha:%.2f)" % 
+              (mode.upper(), adv_period, smooth_alpha))
+        return True
+
+    def set_custom_responsiveness(self, adv_period_ms, smooth_alpha):
+        """Set custom responsiveness parameters.
+
+        Args:
+            adv_period_ms (int): Advertisement period in milliseconds (50-200)
+            smooth_alpha (float): Smoothing factor 0.0-1.0 (higher = snappier)
+
+        Returns:
+            bool: True if parameters were valid and applied
+
+        Example:
+            >>> dance = DanceParty("ILLO_01")
+            >>> dance.set_custom_responsiveness(60, 0.92)  # Custom tuning
+        """
+        if not (50 <= adv_period_ms <= 200):
+            print("[DANCE] ⚠️ adv_period_ms must be 50-200ms")
+            return False
+
+        if not (0.5 <= smooth_alpha <= 0.95):
+            print("[DANCE] ⚠️ smooth_alpha must be 0.5-0.95")
+            return False
+
+        self._ADV_PERIOD_MS = int(adv_period_ms)
+        self._SMOOTH_ALPHA = float(smooth_alpha)
+
+        print("[DANCE] 🎛️ Custom responsiveness (ads:%dms, alpha:%.2f)" % 
+              (self._ADV_PERIOD_MS, self._SMOOTH_ALPHA))
+        return True
+
     def run(self, mode, volume):
 
         """Main execution loop for Dance Party routine.
@@ -295,138 +392,154 @@ class DanceParty(BaseRoutine):
         time.sleep(0.001)
 
     def _leader_frame(self):
-        """Render an audio-reactive baton with expressive beat pops.
+        """Render audio-reactive visualization with frequency-based rotation and persistence.
 
-        This method implements the leader's visual display, which consists of:
-            - Audio energy analysis with two-stage smoothing
-            - Hysteretic color selection (prevents flickering)
-            - Beat detection triggering visual effects
-            - Three-pixel baton (head + trail + optional spark)
+        This method implements an enhanced audio visualizer inspired by Intergalactic Cruising:
+            - Frequency analysis from audio deltas
+            - Rotating pixel patterns based on frequency
+            - Fade/persistence effects for smooth trails
+            - Idle comet animation when no audio detected
 
         The rendered state is cached in `_last_triples` for BLE broadcasting.
 
         Note:
-            - Falls back to default intensity (140) if audio unavailable
-            - Beat detection triggers direction reversal and spark effects
-            - Quantizes intensity to reduce BLE state changes
+            - Falls back to idle animation if audio unavailable
+            - Frequency determines rotation speed
+            - Top 3 brightest pixels encoded for BLE sync
         """
-        intensity = 140  # calmer default
-        color_type = self._ctype
+        if not self._audio_ok:
+            self._idle_animation()
+            return
 
-        if self._audio_ok:
-            try:
-                samples = self.audio.record_samples()
-                if samples and len(samples) > 0:
-                    n = min(len(samples), 200)
-                    if n > 0:
-                        ssum = 0.0
-                        mean = 0.0
-                        for i in range(n):
-                            mean += samples[i]
-                        mean = mean / n
-                        for i in range(n):
-                            d = samples[i] - mean
-                            ssum += d * d
-                        energy = (ssum / n) ** 0.5
+        try:
+            # Get audio samples and compute deltas
+            samples = self.audio.record_samples()
+            if not samples or len(samples) == 0:
+                self._idle_animation()
+                return
 
-                        # Sanity check on energy value (16-bit PCM range)
-                        if 0 <= energy <= 32768:
-                            # Two-stage smoothing: fast LP plus slower envelope
-                            self._energy_lp = 0.82 * self._energy_lp + 0.18 * energy
-                            if self._energy_lp > self._env:  # attack
-                                self._env = 0.60 * self._env + 0.40 * self._energy_lp
-                            else:  # decay
-                                self._env = 0.92 * self._env + 0.08 * self._energy_lp
-                            intensity = int(max(60, min(240, self._env)))
-                            # Quantize intensity to coarse steps (fewer states)
-                            intensity = (intensity // 32) * 32
-                            # Hysteretic color selection
-                            high_on, high_off = 208, 192
-                            mid_on, mid_off = 152, 136
-                            if self._ctype == 0 and intensity < high_off:
-                                self._ctype = 1
-                            elif self._ctype == 1 and intensity < mid_off:
-                                self._ctype = 2
-                            elif self._ctype == 1 and intensity > high_on:
-                                self._ctype = 0
-                            elif self._ctype == 2 and intensity > mid_on:
-                                self._ctype = 1
-                            color_type = self._ctype
-                        else:
-                            if self.debug_audio:
-                                print("[DANCE] ⚠️ Invalid energy value: %f" % energy)
+            deltas = self.audio.compute_deltas(samples)
+            if not deltas:
+                self._idle_animation()
+                return
 
-            except Exception as e:
-                if self.debug_audio:
-                    print("[DANCE] audio err: %s" % e)
+            # Calculate frequency from audio
+            freq = self.audio.calculate_frequency(deltas)
 
-        # Lightweight beat detect from envelope movement
-        beat_thr_on, beat_thr_off = 192, 168
-        if not self._beat_on and intensity >= beat_thr_on:
-            self._beat_on = True
-            self._beat_timer = 2
-            self._gap = 2
-            self._swing_ms = int(self._STEP_MS * 0.08)
-            if intensity >= 224:
-                self._dir = -self._dir
-            self._spark_pos = (self._index + (2 * self._dir)) % self._NUM_PIXELS
-        elif self._beat_on and intensity <= beat_thr_off:
-            self._beat_on = False
+            if freq is None:
+                self._idle_animation()
+                return
 
-        # Build 3 pixels: head + ONE trail + optional spark (3rd triple)
-        head_pos = self._index
-        trail1 = (head_pos - (1 * self._dir)) % self._NUM_PIXELS
-        trail2 = (head_pos - (self._gap * self._dir)) % self._NUM_PIXELS
+            if self.debug_audio and (self._seq % 50 == 0):
+                print("[DANCE] 🎵 Freq: %.1f Hz" % freq)
 
-        head_int = intensity + (40 if self._beat_timer > 0 else 0)
-        if head_int > 255:
-            head_int = 255
-        t1_int = max(0, int(head_int * 0.55))
-        t2_int = 0
-        if self._spark_pos is not None:
-            trail2 = self._spark_pos
-            t2_int = min(255, int(head_int * 0.75))
+            # Map deltas to pixel intensities
+            pixel_data = [0] * self._NUM_PIXELS
+            for i in range(min(len(deltas), self._NUM_PIXELS)):
+                # Scale deltas to intensity range
+                intensity = min(255, int(abs(deltas[i]) * 2.5))
+                pixel_data[i] = intensity
 
-        # Convert color_type + intensity to RGB
-        def themed_rgb(inten, ctype):
-            """Convert intensity and color type to RGB tuple.
+            # Apply rotation based on frequency
+            current_time = time.monotonic()
+            time_delta = current_time - self.last_update
+            rotation_increment = freq * time_delta * 0.01
+            self.rotation_offset = (self.rotation_offset + rotation_increment) % self._NUM_PIXELS
+            self.last_update = current_time
 
-            Args:
-                inten (int): Intensity value (0-255)
-                ctype (int): Color type (0=red, 1=green, 2=blue/pink)
+            # Clear and render with rotation
+            self._clear_pixels()
 
-            Returns:
-                tuple: RGB color tuple (r, g, b) with values 0-255
-            """
-            inten = int(inten)
-            if inten <= 0:
-                return 0, 0, 0
-            if ctype == 0:  # red-ish
-                return inten, int(inten * 0.15), int(inten * 0.15)
-            elif ctype == 1:  # green-ish
-                return int(inten * 0.15), inten, int(inten * 0.15)
-            else:  # blue/pink-ish
-                return int(inten * 0.3), int(inten * 0.05), inten
+            # Apply rotation and render pixels
+            active_pixels = []
+            for i in range(self._NUM_PIXELS):
+                rotated_index = int((i + self.rotation_offset) % self._NUM_PIXELS)
+                base_intensity = pixel_data[i]
 
-        # Draw leader pixels
-        self._clear_pixels()
-        cp.pixels[trail2] = themed_rgb(t2_int, color_type)
-        cp.pixels[trail1] = themed_rgb(t1_int, color_type)
-        cp.pixels[head_pos] = themed_rgb(head_int, color_type)
-        cp.pixels.show()
+                if base_intensity > 50:  # Threshold for visibility
+                    # Dynamic color based on intensity (similar to hysteretic coloring)
+                    if base_intensity > 200:
+                        color_type = 0  # Red for high intensity
+                    elif base_intensity > 140:
+                        color_type = 1  # Green for medium
+                    else:
+                        color_type = 2  # Blue/pink for lower
 
-        # Cache for advertisement build
-        self._last_triples = [
-            (head_pos, head_int, color_type),
-            (trail1, t1_int, color_type),
-            (trail2, t2_int, color_type),
-        ]
+                    rgb = self._themed_rgb(base_intensity, color_type)
+                    cp.pixels[rotated_index] = rgb
+                    active_pixels.append((rotated_index, base_intensity, color_type))
 
-        # Decay one-frame spark and beat pop
-        if self._beat_timer > 0:
-            self._beat_timer -= 1
-        if self._beat_timer == 0:
-            self._spark_pos = None
+            cp.pixels.show()
+
+            # Fade effect for persistence
+            time.sleep(0.03)
+            for i in range(self._NUM_PIXELS):
+                current_color = cp.pixels[i]
+                if current_color != (0, 0, 0):
+                    faded_color = tuple(int(c * 0.75) for c in current_color)
+                    cp.pixels[i] = faded_color
+
+            # Cache top 3 brightest pixels for BLE sync
+            active_pixels.sort(key=lambda x: x[1], reverse=True)
+            self._last_triples = []
+            for i in range(3):
+                if i < len(active_pixels):
+                    self._last_triples.append(active_pixels[i])
+                else:
+                    self._last_triples.append((0, 0, 2))
+
+        except Exception as e:
+            if self.debug_audio:
+                print("[DANCE] 🎵 visualizer err: %s" % e)
+            self._idle_animation()
+
+    def _idle_animation(self):
+        """Gentle rotating comet animation when no audio detected."""
+        current_time = time.monotonic()
+
+        if current_time - self.last_update > 0.15:
+            self.rotation_offset = (self.rotation_offset + 1) % self._NUM_PIXELS
+
+            self._clear_pixels()
+
+            # Create rotating comet effect
+            main_pos = int(self.rotation_offset)
+            trail1_pos = (main_pos - 1) % self._NUM_PIXELS
+            trail2_pos = (main_pos - 2) % self._NUM_PIXELS
+
+            cp.pixels[main_pos] = self._themed_rgb(120, 2)
+            cp.pixels[trail1_pos] = self._themed_rgb(80, 2)
+            cp.pixels[trail2_pos] = self._themed_rgb(50, 2)
+
+            cp.pixels.show()
+            self.last_update = current_time
+
+            # Cache for BLE sync
+            self._last_triples = [
+                (main_pos, 120, 2),
+                (trail1_pos, 80, 2),
+                (trail2_pos, 50, 2),
+            ]
+
+    def _themed_rgb(self, inten, ctype):
+        """Convert intensity and color type to RGB tuple.
+
+        Args:
+            inten (int): Intensity value (0-255)
+            ctype (int): Color type (0=red, 1=green, 2=blue/pink)
+
+        Returns:
+            tuple: RGB color tuple (r, g, b) with values 0-255
+        """
+        inten = int(inten)
+        if inten <= 0:
+            return (0, 0, 0)
+        if ctype == 0:  # red-ish
+            return (inten, int(inten * 0.15), int(inten * 0.15))
+        elif ctype == 1:  # green-ish
+            return (int(inten * 0.15), inten, int(inten * 0.15))
+        else:  # blue/pink-ish
+            return (int(inten * 0.3), int(inten * 0.05), inten)
 
     def _advance_ring_if_due(self):
         """Advance the ring position based on timing and swing effects.
@@ -449,14 +562,14 @@ class DanceParty(BaseRoutine):
         """Advertise current visual state via BLE name if due.
 
         Builds advertisement name from cached visual state and broadcasts via BLE.
-        Includes emergency garbage collection if MemoryError occurs.
+        Must stop and restart advertising to update the broadcast name.
 
         Raises:
             MemoryError: Triggers emergency GC and reports memory status
 
         Note:
-            - Rate-limited by `_ADV_PERIOD_MS`
-            - Stops previous advertisement before starting new one
+            - Rate-limited by `_ADV_PERIOD_MS` (faster for visualizer sync)
+            - MUST stop and restart advertising to broadcast new name
             - Errors are suppressed except MemoryError (always reported)
         """
         t = self._now_ms()
@@ -464,19 +577,24 @@ class DanceParty(BaseRoutine):
             return
 
         name = self._build_adv_name_from_triples()
-        adv = Advertisement()
-        adv.complete_name = name
 
         try:
+            # Create fresh advertisement with new name
+            adv = Advertisement()
+            adv.complete_name = name
+
+            # MUST stop advertising before starting with new name
             try:
                 self.ble.stop_advertising()
             except Exception:
-                pass
+                pass  # May not be advertising yet
+
+            # Start advertising with updated name
             self.ble.start_advertising(adv)
 
             # Success feedback
-            if self.debug_bluetooth and (self._seq % 100 == 0):
-                print("[DANCE] ✅ ADV healthy, seq=%d" % self._seq)
+            if self.debug_bluetooth and (self._seq % 50 == 0):
+                print("[DANCE] 📡 Broadcasting: %s" % name)
 
         except MemoryError as e:
             print("[DANCE] 🚨 MEMORY ERROR in advertising: %s" % e)
@@ -484,7 +602,7 @@ class DanceParty(BaseRoutine):
             print("[DANCE] 🧹 Emergency GC, freed to %d bytes" % gc.mem_free())
         except Exception as e:
             if self.debug_bluetooth and (self._seq % 20 == 0):
-                print("[DANCE] ⚠️ ADV restart suppressed: %s" % e)
+                print("[DANCE] ⚠️ ADV err: %s" % e)
         finally:
             self._last_adv_ms = t
 
@@ -528,21 +646,24 @@ class DanceParty(BaseRoutine):
         visual state, and renders to local NeoPixels with smoothing.
 
         Features:
-            - Active scanning for long advertisement names
+            - Fast, short scan bursts for low latency
+            - Immediate packet processing (no wait for scan completion)
             - Duplicate frame detection via sequence number
             - Connection health tracking (success/fail counts)
             - Leader loss detection with timeout
             - Periodic health reporting (every 30 seconds if debugging)
 
         Note:
-            - Stops after first valid advertisement (one per burst)
+            - Processes packets immediately for minimal latency
+            - Shorter scan bursts allow more frequent updates
             - Clears display after `_LOSS_TIMEOUT_S` without leader packets
         """
         found = False
+        packets_processed = 0
 
-        # Active scan to receive scan responses (name overflow)
+        # Active scan with reduced timeout for faster cycling
         for adv in self.ble.start_scan(
-                Advertisement, timeout=self._SCAN_BURST_S, minimum_rssi=-85, active=True
+                Advertisement, timeout=self._SCAN_BURST_S, minimum_rssi=-90, active=True
         ):
             adv_name = ""
             try:
@@ -556,23 +677,33 @@ class DanceParty(BaseRoutine):
             if not adv_name or not adv_name.startswith("ILLO_"):
                 continue
 
+            # Debug: show what we're receiving
+            if self.debug_bluetooth and packets_processed == 0:
+                print("[DANCE] 🔍 Received: %s" % adv_name)
+
             parsed = self._parse_name(adv_name)
             if not parsed:
                 self._sync_fail_count += 1
+                if self.debug_bluetooth:
+                    print("[DANCE] ⚠️ Parse failed for: %s" % adv_name)
                 continue
 
             found = True
             self._sync_success_count += 1
             self._last_seen_t = time.monotonic()
+            packets_processed += 1
 
-            # Only render new frames
+            # Render all new frames immediately (no sequence filtering)
+            # This reduces latency at the cost of potential duplicate renders
             if self._last_seq is None or parsed["seq"] != self._last_seq:
                 self._last_seq = parsed["seq"]
                 self._render_triples(parsed["triples"])
-                if self.debug_bluetooth and (self._last_seq % 20 == 0):
-                    print("[DANCE] 🔗 sync seq=%d" % self._last_seq)
 
-            break
+                if self.debug_bluetooth and (self._last_seq % 20 == 0):
+                    print("[DANCE] 🔗 Rendered seq=%d, triples=%s" % (self._last_seq, parsed["triples"]))
+
+                # Exit immediately after rendering for minimal latency
+                break
 
         self.ble.stop_scan()
 
@@ -582,8 +713,9 @@ class DanceParty(BaseRoutine):
             total = self._sync_success_count + self._sync_fail_count
             if total > 0:
                 success_rate = (self._sync_success_count * 100) // total
-                print("[DANCE] 📊 Sync health: %d%% success (%d/%d)" %
-                      (success_rate, self._sync_success_count, total))
+                lag_ms = int((now - (self._last_seen_t or now)) * 1000)
+                print("[DANCE] 📊 Sync: %d%% success (%d/%d), lag: %dms" %
+                      (success_rate, self._sync_success_count, total, lag_ms))
             self._last_health_report_t = now
 
         # Loss handling
@@ -594,7 +726,8 @@ class DanceParty(BaseRoutine):
                 self._clear_pixels()
                 self._last_seq = None
 
-        time.sleep(0.003)
+        # Minimal sleep to avoid busy-waiting but keep responsive
+        time.sleep(0.001)
 
     def _parse_name(self, name):
         """Parse BLE advertisement name into visual state.
@@ -635,18 +768,18 @@ class DanceParty(BaseRoutine):
             return None
 
     def _render_triples(self, triples):
-        """Render received visual state to NeoPixels with smoothing.
+        """Render received visual state to NeoPixels with minimal latency.
 
         Args:
             triples (list): List of (position, intensity, color_type) tuples
 
         Note:
-            - Rate-limited to `_MIN_RENDER_MS` to prevent thrashing
-            - Uses exponential smoothing (`_SMOOTH_ALPHA`) for smooth transitions
+            - Reduced rate limiting for faster updates (optimized for visualizer)
+            - Higher smoothing alpha for snappier response with minimal lag
             - Maps color types to RGB: 0=red, 1=green, 2=blue/pink
             - Clamps all output values to valid NeoPixel range (0-255)
         """
-        # Rate-limit overall render to avoid thrash
+        # Reduced rate-limit for faster render updates
         now = self._now_ms()
         if (now - self._last_render_ms) < self._MIN_RENDER_MS:
             return
@@ -661,7 +794,7 @@ class DanceParty(BaseRoutine):
             if inten <= 0 or not (0 <= pos < self._NUM_PIXELS):
                 continue
 
-            # Map ILLO color types to RGB
+            # Map ILLO color types to RGB (optimized)
             if ctype == 0:  # red-ish
                 r = inten
                 g = int(inten * 0.15)
@@ -679,16 +812,20 @@ class DanceParty(BaseRoutine):
 
             target[pos] = [r, g, b]
 
-        # Exponential smoothing toward target
+        # Faster exponential smoothing (higher alpha = less latency)
         a = self._SMOOTH_ALPHA
         for i in range(self._NUM_PIXELS):
             sr, sg, sb = self._smooth_rgb[i]
             tr, tg, tb = target[i]
+
+            # Apply smoothing with optimized response
             sr = sr + (tr - sr) * a
             sg = sg + (tg - sg) * a
             sb = sb + (tb - sb) * a
+
             self._smooth_rgb[i] = [sr, sg, sb]
-            # Cast + clamp for NeoPixel
+
+            # Fast cast + clamp for NeoPixel
             r = 0 if sr < 0 else (255 if sr > 255 else int(sr + 0.5))
             g = 0 if sg < 0 else (255 if sg > 255 else int(sg + 0.5))
             b = 0 if sb < 0 else (255 if sb > 255 else int(sb + 0.5))

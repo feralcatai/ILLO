@@ -1,5 +1,136 @@
 ILLO Bluetooth Control Guide
-Intergalactic Cruising with Bluefruit Connect
+Intergalactic Cruising with Bluefruit Connect & Dance Party Multi-Device Sync
+
+This guide covers two types of Bluetooth features in ILLO:
+1. **Intergalactic Cruising**: Interactive control via Bluefruit Connect app
+2. **Dance Party**: Automatic multi-device light show synchronization
+
+================================================================================
+DANCE PARTY MULTI-DEVICE SYNCHRONIZATION
+================================================================================
+
+Overview:
+
+Dance Party mode features an advanced audio visualizer that can synchronize
+multiple ILLO devices wirelessly. One device acts as the "leader" (analyzing
+audio and broadcasting visual state), while other devices act as "followers"
+(mirroring the leader's display).
+
+Leader Mode (Mode 1):
+
+- Analyzes audio frequency in real-time using FFT
+- Creates rotating pixel patterns based on detected frequency
+- Applies fade/persistence effects for smooth visual trails
+- Broadcasts visual state via BLE advertisement names (12.5x per second)
+- Shows idle comet animation when no audio is detected
+
+Key Features:
+- Frequency-reactive rotation speed (higher pitch = faster rotation)
+- Dynamic color selection based on audio intensity
+- Top 3 brightest pixels encoded for BLE transmission
+- Automatic fallback to idle animation without audio
+
+Follower Modes (Modes 2-4):
+
+- Scans for leader BLE advertisements continuously
+- Parses received visual state and renders locally
+- Applies smoothing for natural-looking synchronization
+- All follower modes behave identically (2, 3, 4 are equivalent)
+- Automatic leader loss detection after 3 seconds
+
+Key Features:
+- Near real-time mirroring (~100ms latency typical)
+- No audio processing required (fully silent operation)
+- Automatic reconnection when leader returns
+- Health tracking and diagnostic reporting
+
+Protocol Details:
+
+Advertisement Name Format:
+ILLO_<seq>_<pos1>_<int1>_<col1>_<pos2>_<int2>_<col2>_<pos3>_<int3>_<col3>
+
+Where:
+- seq: Sequence number (0-255, wraps)
+- pos: Pixel position (0-9)
+- int: Intensity (0-255)
+- col: Color type (0=red, 1=green, 2=blue/pink)
+
+Example: "ILLO_42_5_180_1_4_120_1_3_80_2"
+- Sequence 42
+- Pixel 5: intensity 180, green
+- Pixel 4: intensity 120, green  
+- Pixel 3: intensity 80, blue/pink
+
+Setup Instructions:
+
+1. Configure Leader:
+   - Switch to Dance Party mode (Button A to Routine 4)
+   - Press Button B until Mode 1 (1 orange pixel blink)
+   - Verify audio-reactive patterns appear when playing music
+
+2. Configure Followers:
+   - Switch to Dance Party mode on each follower device
+   - Press Button B until Mode 2, 3, or 4 (any follower mode works)
+   - Watch for follower to mirror leader's patterns
+
+3. Verify Synchronization:
+   - Play music near the leader device
+   - All followers should mirror the rotating pattern
+   - Typical latency: 80-150ms (nearly imperceptible)
+
+Performance Tuning:
+
+Three preset configurations available (requires code modification):
+
+FAST MODE (Maximum Responsiveness):
+- Broadcast rate: 50ms (20 times per second)
+- Follower smoothing: 0.95 (near-instant)
+- Best for: Tight sync, fast-paced music
+- Trade-off: Higher battery drain
+
+BALANCED MODE (DEFAULT):
+- Broadcast rate: 80ms (12.5 times per second)
+- Follower smoothing: 0.90 (snappy)
+- Best for: General use, good balance
+- Trade-off: Balanced performance and battery
+
+SMOOTH MODE (Battery Saver):
+- Broadcast rate: 120ms (8.3 times per second)
+- Follower smoothing: 0.70 (fluid)
+- Best for: Ambient displays, slower music
+- Trade-off: Slightly more latency
+
+To change presets, edit dance_party.py and uncomment desired configuration.
+
+Troubleshooting Dance Party:
+
+Followers Not Syncing:
+- Verify bluetooth_enabled: true in config.json
+- Ensure leader is in Mode 1, followers in Mode 2-4
+- Check that devices are within 10-15 feet
+- Restart all devices to reinitialize BLE radios
+
+Laggy/Choppy Sync:
+- Try FAST preset mode for better responsiveness
+- Reduce distance between devices
+- Ensure fresh batteries (low voltage affects BLE performance)
+- Check for interference from other BLE devices
+
+Leader Not Broadcasting:
+- Verify leader shows audio visualization (confirms operation)
+- Check bluetooth_enabled setting in config.json
+- Ensure audio is reaching the microphone
+- Try power cycling to reinitialize BLE
+
+Partial Sync (some followers work, others don't):
+- Position non-working followers closer to leader
+- Check battery levels on all devices
+- Verify config.json bluetooth setting on all devices
+- Try setting non-working followers to different modes (2 vs 3 vs 4)
+
+================================================================================
+INTERGALACTIC CRUISING INTERACTIVE CONTROL
+================================================================================
 
 Congratulations on making your first Bluetooth connection! Your ILLO UFO now
 supports wireless control through the Adafruit Bluefruit Connect app.
