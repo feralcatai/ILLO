@@ -1,6 +1,33 @@
 # Charles Doebler at Feral Cat AI
 # Hardware management for Circuit Playground UFO
 
+"""Hardware Abstraction Layer for Circuit Playground Bluefruit.
+
+This module provides a simplified interface to Circuit Playground hardware,
+abstracting NeoPixel control, audio output, and sensor access for UFO routines.
+
+The hardware manager handles:
+    - NeoPixel LED ring control and brightness management
+    - Tone generation via piezo speaker
+    - Hardware abstraction to simplify routine implementations
+    - Battery-conscious default brightness settings
+
+Classes:
+    HardwareManager: Hardware abstraction for Circuit Playground
+
+Example:
+    >>> hardware = HardwareManager()
+    >>> hardware.update_pixels_with_data(data, color_function)
+    >>> hardware.play_tone_if_enabled(440, 0.2, volume=1)
+
+Author:
+    Charles Doebler at Feral Cat AI
+
+Dependencies:
+    - adafruit_circuitplayground
+    - simpleio
+"""
+
 from adafruit_circuitplayground import cp
 import simpleio
 import time

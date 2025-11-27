@@ -2,6 +2,41 @@
 # Charles Doebler at Feral Cat AI
 # UFO Memory Management System - College-Aware
 
+"""UFO Persistent Memory Management System.
+
+This module manages the AI's long-term memory, storing personality traits,
+experiences, relationships, and learned preferences across power cycles.
+
+The memory system provides:
+    - Persistent JSON-based memory storage (ufo_memory.json)
+    - Personality trait tracking (curiosity, playfulness, calmness, loyalty)
+    - Experience accumulation (total interactions, shake count, college displays)
+    - Relationship state (trust level, bond strength, last interaction time)
+    - Preference learning (favorite colors, modes, times of day)
+    - Flash wear protection with controlled save frequency
+    - College spirit and team loyalty tracking
+
+Classes:
+    UFOMemoryManager: Manages persistent AI memory and learning data
+
+Example:
+    >>> memory = UFOMemoryManager(persistent_memory=True)
+    >>> memory.record_interaction("tap")
+    >>> memory.update_personality("playfulness", 0.1)
+    >>> memory.save_memory()  # Persists to ufo_memory.json
+
+Author:
+    Charles Doebler at Feral Cat AI
+
+Dependencies:
+    - Writable filesystem (requires boot.py configuration)
+
+Note:
+    Memory persistence requires filesystem write access. The system
+    gracefully degrades to session-only memory if writes fail.
+    Save frequency is throttled to protect flash memory lifespan.
+"""
+
 import json
 import time
 

@@ -1,5 +1,37 @@
 # Charles Doebler at Feral Cat AI
 
+"""College Data Management System.
+
+This module manages loading and accessing college-specific data including
+team colors, fight songs, and chant patterns from JSON configuration files.
+
+The college manager provides:
+    - JSON-based college configuration loading
+    - Team color retrieval (primary and secondary)
+    - Fight song data access
+    - Chant pattern information
+    - Graceful fallback for missing college data
+
+Classes:
+    CollegeManager: Loads and manages college-specific data
+
+Example:
+    >>> manager = CollegeManager("penn_state")
+    >>> if manager.is_enabled():
+    ...     colors = manager.get_colors()
+    ...     primary = colors['primary']  # [0, 60, 113]
+
+Author:
+    Charles Doebler at Feral Cat AI
+
+Dependencies:
+    - College JSON files in colleges/ directory
+
+Note:
+    College JSON files must follow the schema with name, colors,
+    fight_song, and chants fields.
+"""
+
 import json
 
 class CollegeManager:
