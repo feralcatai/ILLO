@@ -1,6 +1,6 @@
 [project]
 name = "illo"
-version = "3.0.0"
+version = "2.0.1"
 description = "AI-Powered Levitating UFO Companion with Smart Environmental Sensing - Complete Release v3.0"
 authors = [
     {name = "Charles Doebler", email = "charles@feralcatai.com"}
@@ -64,7 +64,7 @@ documentation = "https://github.com/cdoebler1/ILLO/blob/main/README.md"
 [tool.circuitpython]
 target_board = "circuitplayground_bluefruit"
 main_file = "code.py"
-firmware_version = "9.0.4"
+firmware_version = "10.0.1"
 required_libraries = [
     "adafruit_ble",
     "adafruit_bluefruit_connect",
@@ -79,7 +79,7 @@ required_libraries = [
 [hardware]
 board = "Adafruit Circuit Playground Bluefruit"
 processor = "ARM Cortex-M4 64MHz (nRF52840)"
-circuitpython_version = ">=9.0.0"
+circuitpython_version = ">=9.0.4"
 flash_memory = "2MB"
 ram_memory = "256KB"
 platform = "magnetic_levitation_ufo"

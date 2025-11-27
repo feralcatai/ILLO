@@ -1,6 +1,45 @@
 # Charles Doebler at Feral Cat AI
 # UFO College System - College spirit and celebration management
 
+"""UFO College Spirit Integration System.
+
+This module integrates college team spirit into the UFO Intelligence AI,
+enabling team-colored displays, fight song recognition, and chant responses.
+
+The college system provides:
+    - College color palette integration for displays
+    - Random team spirit celebrations
+    - Fight song recognition and triggered celebrations
+    - Chant detection and response patterns (when enabled)
+    - College loyalty tracking in AI memory
+    - Spirit level accumulation over time
+    - Coordinated audio and visual team displays
+
+Classes:
+    UFOCollegeSystem: Manages college spirit behaviors and integration
+
+Example:
+    >>> college = UFOCollegeSystem(enabled=True, college="penn_state")
+    >>> if college.should_show_college_colors():
+    ...     colors = college.get_college_colors()
+    ...     # Display team colors
+    >>> college.trigger_fight_song_celebration()
+
+Author:
+    Charles Doebler at Feral Cat AI
+
+Dependencies:
+    - college_manager
+    - music_player
+    - chant_detector
+    - College JSON files in colleges/ directory
+
+Note:
+    Requires valid college JSON file in colleges/ directory.
+    Set college_spirit_enabled=False in config.json to disable team behaviors.
+    Chant detection is optional and configured separately.
+"""
+
 import time
 import random
 from college_manager import CollegeManager

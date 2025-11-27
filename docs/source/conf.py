@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.abspath(os.path.join('..', '..', '..')))
 project = 'ILLO'
 copyright = '2025, Charles Doebler'
 author = 'Charles Doebler'
-release = '2.0.0'
+release = '2.0.1'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
