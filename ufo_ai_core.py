@@ -1,6 +1,37 @@
 # Charles Doebler at Feral Cat AI
 # UFO AI Core Decision Making - College-Aware
 
+"""UFO AI Core Decision Making Engine.
+
+This module implements the central decision-making system for the UFO Intelligence
+routine, managing autonomous behaviors, mood states, and personality development.
+
+The AI Core orchestrates:
+    - Autonomous decision-making and behavior selection
+    - Mood and energy state management
+    - Attention-seeking behaviors when interaction is lacking
+    - Personality trait application from persistent memory
+    - Integration with college system for team spirit behaviors
+
+Classes:
+    UFOAICore: Central AI decision engine with college awareness
+
+Example:
+    >>> from ufo_memory_manager import UFOMemoryManager
+    >>> from ufo_college_system import UFOCollegeSystem
+    >>> memory = UFOMemoryManager(persistent=True)
+    >>> college = UFOCollegeSystem(enabled=True, college="penn_state")
+    >>> ai_core = UFOAICore(memory, college)
+    >>> decision = ai_core.make_decision(interaction_occurred=True)
+
+Author:
+    Charles Doebler at Feral Cat AI
+
+Dependencies:
+    - ufo_memory_manager
+    - ufo_college_system
+"""
+
 import time
 import random
 import math

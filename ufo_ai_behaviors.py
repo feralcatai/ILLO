@@ -1,6 +1,38 @@
 # Charles Doebler at Feral Cat AI
 # UFO AI Behavior Patterns - College-Aware
 
+"""UFO AI Behavior Pattern Implementations.
+
+This module contains the concrete behavior implementations for the UFO Intelligence
+system, translating AI decisions into visual light patterns and responses.
+
+The behavior system provides:
+    - Celebration and happiness patterns
+    - Sleep and low-energy states
+    - Attention-seeking behaviors
+    - Interactive response patterns
+    - Mood-specific light displays
+    - College spirit celebration patterns
+
+Classes:
+    UFOAIBehaviors: Implements specific AI behavior patterns
+
+Example:
+    >>> from hardware_manager import HardwareManager
+    >>> from ufo_college_system import UFOCollegeSystem
+    >>> hardware = HardwareManager()
+    >>> college = UFOCollegeSystem(enabled=True, college="penn_state")
+    >>> behaviors = UFOAIBehaviors(hardware, college)
+    >>> behaviors.celebrate_interaction(pixels, get_color_func)
+
+Author:
+    Charles Doebler at Feral Cat AI
+
+Dependencies:
+    - hardware_manager
+    - ufo_college_system
+"""
+
 import math
 import random
 import time
