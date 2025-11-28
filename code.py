@@ -62,7 +62,7 @@ import microcontroller
 import os
 
 # Version tracking
-VERSION = "2.0.1"
+VERSION = "2.0.2"
 
 # Debug Configuration - Set these flags to enable debug output
 debug_bluetooth = False
