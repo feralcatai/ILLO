@@ -31,10 +31,10 @@ python tools/circuitpy_sync.py
 ```bash
 # Build Sphinx documentation
 cd docs
-make html
+make html  # or: python -m sphinx -M html source build
 
-# View API documentation
-cd apidocs
+# View API documentation (in browser)
+cd docs/build/html
 python -m http.server
 ```
 

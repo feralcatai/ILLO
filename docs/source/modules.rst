@@ -7,9 +7,7 @@ ILLO
    audio_processor
    base_routine
    bluetooth_controller
-   boot
    chant_detector
-   code
    college_manager
    color_utils
    config_manager

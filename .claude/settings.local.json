@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sphinx-build:*)",
+      "Bash(python -m sphinx:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

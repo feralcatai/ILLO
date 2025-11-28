@@ -70,11 +70,13 @@ Edit ``config.json`` to customize ILLO's behavior::
 API Documentation
 -----------------
 
+**Main Entry Point:** The ``code.py`` file serves as the CircuitPython entry point
+and orchestrates all routines. See the source file directly for implementation details.
+
 .. toctree::
    :maxdepth: 2
    :caption: Core System
 
-   code
    config_manager
    memory_manager
    interaction_manager

@@ -5,17 +5,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>ILLO &#8212; ILLO 2.0.0 documentation</title>
+    <title>ILLO &#8212; ILLO 2.0.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
-    <script src="_static/documentation_options.js?v=51b770b3"></script>
+    <script src="_static/documentation_options.js?v=f5cff4aa"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="boot module" href="boot.html" />
-    <link rel="prev" title="memory_manager module" href="memory_manager.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -37,50 +35,272 @@
 <h1>ILLO<a class="headerlink" href="#illo" title="Link to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="audio_processor.html">audio_processor module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="base_routine.html">base_routine module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bluetooth_controller.html">bluetooth_controller module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="boot.html">boot module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chant_detector.html">chant_detector module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code.html">code module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="code.html#code.InteractiveConsole"><code class="docutils literal notranslate"><span class="pre">InteractiveConsole</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="code.html#code.InteractiveConsole.interact"><code class="docutils literal notranslate"><span class="pre">InteractiveConsole.interact()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="code.html#code.InteractiveConsole.push"><code class="docutils literal notranslate"><span class="pre">InteractiveConsole.push()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="code.html#code.InteractiveConsole.raw_input"><code class="docutils literal notranslate"><span class="pre">InteractiveConsole.raw_input()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="code.html#code.InteractiveConsole.resetbuffer"><code class="docutils literal notranslate"><span class="pre">InteractiveConsole.resetbuffer()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_processor.html">audio_processor module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="audio_processor.html#audio_processor.AudioProcessor"><code class="docutils literal notranslate"><span class="pre">AudioProcessor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="audio_processor.html#audio_processor.AudioProcessor.calculate_frequency"><code class="docutils literal notranslate"><span class="pre">AudioProcessor.calculate_frequency()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="audio_processor.html#audio_processor.AudioProcessor.compute_deltas"><code class="docutils literal notranslate"><span class="pre">AudioProcessor.compute_deltas()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="audio_processor.html#audio_processor.AudioProcessor.record_samples"><code class="docutils literal notranslate"><span class="pre">AudioProcessor.record_samples()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="code.html#code.InteractiveInterpreter"><code class="docutils literal notranslate"><span class="pre">InteractiveInterpreter</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="code.html#code.InteractiveInterpreter.runcode"><code class="docutils literal notranslate"><span class="pre">InteractiveInterpreter.runcode()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="code.html#code.InteractiveInterpreter.runsource"><code class="docutils literal notranslate"><span class="pre">InteractiveInterpreter.runsource()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="code.html#code.InteractiveInterpreter.showsyntaxerror"><code class="docutils literal notranslate"><span class="pre">InteractiveInterpreter.showsyntaxerror()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="code.html#code.InteractiveInterpreter.showtraceback"><code class="docutils literal notranslate"><span class="pre">InteractiveInterpreter.showtraceback()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="code.html#code.InteractiveInterpreter.write"><code class="docutils literal notranslate"><span class="pre">InteractiveInterpreter.write()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="code.html#code.compile_command"><code class="docutils literal notranslate"><span class="pre">compile_command()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="code.html#code.interact"><code class="docutils literal notranslate"><span class="pre">interact()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="base_routine.html">base_routine module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="base_routine.html#base_routine.BaseRoutine"><code class="docutils literal notranslate"><span class="pre">BaseRoutine</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="base_routine.html#base_routine.BaseRoutine.get_color_function"><code class="docutils literal notranslate"><span class="pre">BaseRoutine.get_color_function()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="base_routine.html#base_routine.BaseRoutine.run"><code class="docutils literal notranslate"><span class="pre">BaseRoutine.run()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="college_manager.html">college_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="color_utils.html">color_utils module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="config_manager.html">config_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dance_party.html">dance_party module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hardware_manager.html">hardware_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="interaction_manager.html">interaction_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intergalactic_cruising.html">intergalactic_cruising module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="light_manager.html">light_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="meditate.html">meditate module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memory_manager.html">memory_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="music_player.html">music_player module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="physical_actions.html">physical_actions module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sync_manager.html">sync_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ufo_ai_behaviors.html">ufo_ai_behaviors module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ufo_ai_core.html">ufo_ai_core module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ufo_college_system.html">ufo_college_system module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ufo_intelligence.html">ufo_intelligence module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ufo_learning.html">ufo_learning module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ufo_memory_manager.html">ufo_memory_manager module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bluetooth_controller.html">bluetooth_controller module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController"><code class="docutils literal notranslate"><span class="pre">BluefruitController</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController.check_connection"><code class="docutils literal notranslate"><span class="pre">BluefruitController.check_connection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController.check_manual_beat"><code class="docutils literal notranslate"><span class="pre">BluefruitController.check_manual_beat()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController.cleanup"><code class="docutils literal notranslate"><span class="pre">BluefruitController.cleanup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController.disable_debug"><code class="docutils literal notranslate"><span class="pre">BluefruitController.disable_debug()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController.enable_debug"><code class="docutils literal notranslate"><span class="pre">BluefruitController.enable_debug()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController.get_brightness_override"><code class="docutils literal notranslate"><span class="pre">BluefruitController.get_brightness_override()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController.get_color_override"><code class="docutils literal notranslate"><span class="pre">BluefruitController.get_color_override()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController.get_connection_info"><code class="docutils literal notranslate"><span class="pre">BluefruitController.get_connection_info()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController.get_effect_modifier"><code class="docutils literal notranslate"><span class="pre">BluefruitController.get_effect_modifier()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController.get_mode_override"><code class="docutils literal notranslate"><span class="pre">BluefruitController.get_mode_override()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController.get_rotation_speed_modifier"><code class="docutils literal notranslate"><span class="pre">BluefruitController.get_rotation_speed_modifier()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController.handle_disconnection"><code class="docutils literal notranslate"><span class="pre">BluefruitController.handle_disconnection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController.is_connected"><code class="docutils literal notranslate"><span class="pre">BluefruitController.is_connected()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController.manage_advertising"><code class="docutils literal notranslate"><span class="pre">BluefruitController.manage_advertising()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController.process_commands"><code class="docutils literal notranslate"><span class="pre">BluefruitController.process_commands()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController.send_response"><code class="docutils literal notranslate"><span class="pre">BluefruitController.send_response()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController.set_advertising_config"><code class="docutils literal notranslate"><span class="pre">BluefruitController.set_advertising_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bluetooth_controller.html#bluetooth_controller.BluefruitController.start_advertising"><code class="docutils literal notranslate"><span class="pre">BluefruitController.start_advertising()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chant_detector.html">chant_detector module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chant_detector.html#chant_detector.ChantDetector"><code class="docutils literal notranslate"><span class="pre">ChantDetector</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="chant_detector.html#chant_detector.ChantDetector.detect_chant"><code class="docutils literal notranslate"><span class="pre">ChantDetector.detect_chant()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="chant_detector.html#chant_detector.ChantDetector.get_buffer_status"><code class="docutils literal notranslate"><span class="pre">ChantDetector.get_buffer_status()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="chant_detector.html#chant_detector.ChantDetector.get_current_pattern_info"><code class="docutils literal notranslate"><span class="pre">ChantDetector.get_current_pattern_info()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="chant_detector.html#chant_detector.ChantDetector.set_enabled"><code class="docutils literal notranslate"><span class="pre">ChantDetector.set_enabled()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="college_manager.html">college_manager module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="college_manager.html#college_manager.CollegeManager"><code class="docutils literal notranslate"><span class="pre">CollegeManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="college_manager.html#college_manager.CollegeManager.get_chant_data"><code class="docutils literal notranslate"><span class="pre">CollegeManager.get_chant_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="college_manager.html#college_manager.CollegeManager.get_chant_notes"><code class="docutils literal notranslate"><span class="pre">CollegeManager.get_chant_notes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="college_manager.html#college_manager.CollegeManager.get_college_name"><code class="docutils literal notranslate"><span class="pre">CollegeManager.get_college_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="college_manager.html#college_manager.CollegeManager.get_colors"><code class="docutils literal notranslate"><span class="pre">CollegeManager.get_colors()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="college_manager.html#college_manager.CollegeManager.get_fight_song_notes"><code class="docutils literal notranslate"><span class="pre">CollegeManager.get_fight_song_notes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="college_manager.html#college_manager.CollegeManager.get_response_tone"><code class="docutils literal notranslate"><span class="pre">CollegeManager.get_response_tone()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="college_manager.html#college_manager.CollegeManager.is_enabled"><code class="docutils literal notranslate"><span class="pre">CollegeManager.is_enabled()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="college_manager.html#college_manager.CollegeManager.load_college_data"><code class="docutils literal notranslate"><span class="pre">CollegeManager.load_college_data()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="color_utils.html">color_utils module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="color_utils.html#color_utils.ColorFunctions"><code class="docutils literal notranslate"><span class="pre">ColorFunctions</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="color_utils.html#color_utils.ColorFunctions.COLORS"><code class="docutils literal notranslate"><span class="pre">ColorFunctions.COLORS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_utils.html#color_utils.ColorFunctions.blue"><code class="docutils literal notranslate"><span class="pre">ColorFunctions.blue()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_utils.html#color_utils.ColorFunctions.get_mode_description"><code class="docutils literal notranslate"><span class="pre">ColorFunctions.get_mode_description()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_utils.html#color_utils.ColorFunctions.green"><code class="docutils literal notranslate"><span class="pre">ColorFunctions.green()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_utils.html#color_utils.ColorFunctions.pink"><code class="docutils literal notranslate"><span class="pre">ColorFunctions.pink()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_utils.html#color_utils.ColorFunctions.show_selection_feedback"><code class="docutils literal notranslate"><span class="pre">ColorFunctions.show_selection_feedback()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_utils.html#color_utils.ColorFunctions.wheel"><code class="docutils literal notranslate"><span class="pre">ColorFunctions.wheel()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="config_manager.html">config_manager module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="config_manager.html#config_manager.ConfigManager"><code class="docutils literal notranslate"><span class="pre">ConfigManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="config_manager.html#config_manager.ConfigManager.load_config"><code class="docutils literal notranslate"><span class="pre">ConfigManager.load_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="config_manager.html#config_manager.ConfigManager.save_config"><code class="docutils literal notranslate"><span class="pre">ConfigManager.save_config()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dance_party.html">dance_party module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dance_party.html#dance_party.DanceParty"><code class="docutils literal notranslate"><span class="pre">DanceParty</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dance_party.html#dance_party.DanceParty.device_name"><code class="docutils literal notranslate"><span class="pre">DanceParty.device_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dance_party.html#dance_party.DanceParty.debug_bluetooth"><code class="docutils literal notranslate"><span class="pre">DanceParty.debug_bluetooth</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dance_party.html#dance_party.DanceParty.debug_audio"><code class="docutils literal notranslate"><span class="pre">DanceParty.debug_audio</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dance_party.html#dance_party.DanceParty.sync_enabled"><code class="docutils literal notranslate"><span class="pre">DanceParty.sync_enabled</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dance_party.html#dance_party.DanceParty.sync_active"><code class="docutils literal notranslate"><span class="pre">DanceParty.sync_active</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dance_party.html#dance_party.DanceParty.ble"><code class="docutils literal notranslate"><span class="pre">DanceParty.ble</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dance_party.html#dance_party.DanceParty.cleanup"><code class="docutils literal notranslate"><span class="pre">DanceParty.cleanup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dance_party.html#dance_party.DanceParty.enable_bluetooth"><code class="docutils literal notranslate"><span class="pre">DanceParty.enable_bluetooth()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dance_party.html#dance_party.DanceParty.get_debug_status"><code class="docutils literal notranslate"><span class="pre">DanceParty.get_debug_status()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dance_party.html#dance_party.DanceParty.run"><code class="docutils literal notranslate"><span class="pre">DanceParty.run()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dance_party.html#dance_party.DanceParty.set_custom_responsiveness"><code class="docutils literal notranslate"><span class="pre">DanceParty.set_custom_responsiveness()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dance_party.html#dance_party.DanceParty.set_responsiveness"><code class="docutils literal notranslate"><span class="pre">DanceParty.set_responsiveness()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_manager.html">hardware_manager module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hardware_manager.html#hardware_manager.HardwareManager"><code class="docutils literal notranslate"><span class="pre">HardwareManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hardware_manager.html#hardware_manager.HardwareManager.clear_pixels"><code class="docutils literal notranslate"><span class="pre">HardwareManager.clear_pixels()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="hardware_manager.html#hardware_manager.HardwareManager.get_accelerometer"><code class="docutils literal notranslate"><span class="pre">HardwareManager.get_accelerometer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="hardware_manager.html#hardware_manager.HardwareManager.light"><code class="docutils literal notranslate"><span class="pre">HardwareManager.light</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="hardware_manager.html#hardware_manager.HardwareManager.map_deltas_to_pixels"><code class="docutils literal notranslate"><span class="pre">HardwareManager.map_deltas_to_pixels()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="hardware_manager.html#hardware_manager.HardwareManager.play_tone_if_enabled"><code class="docutils literal notranslate"><span class="pre">HardwareManager.play_tone_if_enabled()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="hardware_manager.html#hardware_manager.HardwareManager.shake_detected"><code class="docutils literal notranslate"><span class="pre">HardwareManager.shake_detected()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="hardware_manager.html#hardware_manager.HardwareManager.tap_detected"><code class="docutils literal notranslate"><span class="pre">HardwareManager.tap_detected()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="hardware_manager.html#hardware_manager.HardwareManager.temperature"><code class="docutils literal notranslate"><span class="pre">HardwareManager.temperature</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="hardware_manager.html#hardware_manager.HardwareManager.update_pixels_with_data"><code class="docutils literal notranslate"><span class="pre">HardwareManager.update_pixels_with_data()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="interaction_manager.html">interaction_manager module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="interaction_manager.html#interaction_manager.InteractionManager"><code class="docutils literal notranslate"><span class="pre">InteractionManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="interaction_manager.html#interaction_manager.InteractionManager.check_interactions"><code class="docutils literal notranslate"><span class="pre">InteractionManager.check_interactions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="interaction_manager.html#interaction_manager.InteractionManager.get_light_manager"><code class="docutils literal notranslate"><span class="pre">InteractionManager.get_light_manager()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="interaction_manager.html#interaction_manager.InteractionManager.set_debug"><code class="docutils literal notranslate"><span class="pre">InteractionManager.set_debug()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="interaction_manager.html#interaction_manager.InteractionManager.setup_for_routine"><code class="docutils literal notranslate"><span class="pre">InteractionManager.setup_for_routine()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="intergalactic_cruising.html">intergalactic_cruising module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intergalactic_cruising.html#intergalactic_cruising.IntergalacticCruising"><code class="docutils literal notranslate"><span class="pre">IntergalacticCruising</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="intergalactic_cruising.html#intergalactic_cruising.IntergalacticCruising.cleanup"><code class="docutils literal notranslate"><span class="pre">IntergalacticCruising.cleanup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="intergalactic_cruising.html#intergalactic_cruising.IntergalacticCruising.disable_bluetooth"><code class="docutils literal notranslate"><span class="pre">IntergalacticCruising.disable_bluetooth()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="intergalactic_cruising.html#intergalactic_cruising.IntergalacticCruising.disable_bluetooth_debug"><code class="docutils literal notranslate"><span class="pre">IntergalacticCruising.disable_bluetooth_debug()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="intergalactic_cruising.html#intergalactic_cruising.IntergalacticCruising.disable_debug"><code class="docutils literal notranslate"><span class="pre">IntergalacticCruising.disable_debug()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="intergalactic_cruising.html#intergalactic_cruising.IntergalacticCruising.enable_bluetooth"><code class="docutils literal notranslate"><span class="pre">IntergalacticCruising.enable_bluetooth()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="intergalactic_cruising.html#intergalactic_cruising.IntergalacticCruising.enable_debug"><code class="docutils literal notranslate"><span class="pre">IntergalacticCruising.enable_debug()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="intergalactic_cruising.html#intergalactic_cruising.IntergalacticCruising.get_status"><code class="docutils literal notranslate"><span class="pre">IntergalacticCruising.get_status()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="intergalactic_cruising.html#intergalactic_cruising.IntergalacticCruising.is_bluetooth_available"><code class="docutils literal notranslate"><span class="pre">IntergalacticCruising.is_bluetooth_available()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="intergalactic_cruising.html#intergalactic_cruising.IntergalacticCruising.run"><code class="docutils literal notranslate"><span class="pre">IntergalacticCruising.run()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="intergalactic_cruising.html#intergalactic_cruising.IntergalacticCruising.test_uart_service"><code class="docutils literal notranslate"><span class="pre">IntergalacticCruising.test_uart_service()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="light_manager.html">light_manager module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="light_manager.html#light_manager.LightManager"><code class="docutils literal notranslate"><span class="pre">LightManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="light_manager.html#light_manager.LightManager.check_light_interaction"><code class="docutils literal notranslate"><span class="pre">LightManager.check_light_interaction()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="light_manager.html#light_manager.LightManager.get_current_light_level"><code class="docutils literal notranslate"><span class="pre">LightManager.get_current_light_level()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="light_manager.html#light_manager.LightManager.reset_light_history"><code class="docutils literal notranslate"><span class="pre">LightManager.reset_light_history()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="light_manager.html#light_manager.LightManager.update_brightness_for_ambient_light"><code class="docutils literal notranslate"><span class="pre">LightManager.update_brightness_for_ambient_light()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="meditate.html">meditate module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="meditate.html#meditate.Meditate"><code class="docutils literal notranslate"><span class="pre">Meditate</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="meditate.html#meditate.Meditate.run"><code class="docutils literal notranslate"><span class="pre">Meditate.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memory_manager.html">memory_manager module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memory_manager.html#memory_manager.MemoryManager"><code class="docutils literal notranslate"><span class="pre">MemoryManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="memory_manager.html#memory_manager.MemoryManager.cleanup_before_routine_change"><code class="docutils literal notranslate"><span class="pre">MemoryManager.cleanup_before_routine_change()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_manager.html#memory_manager.MemoryManager.get_memory_info"><code class="docutils literal notranslate"><span class="pre">MemoryManager.get_memory_info()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_manager.html#memory_manager.MemoryManager.log_memory_status"><code class="docutils literal notranslate"><span class="pre">MemoryManager.log_memory_status()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_manager.html#memory_manager.MemoryManager.periodic_cleanup"><code class="docutils literal notranslate"><span class="pre">MemoryManager.periodic_cleanup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_manager.html#memory_manager.MemoryManager.set_debug"><code class="docutils literal notranslate"><span class="pre">MemoryManager.set_debug()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="music_player.html">music_player module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="music_player.html#music_player.MusicPlayer"><code class="docutils literal notranslate"><span class="pre">MusicPlayer</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="music_player.html#music_player.MusicPlayer.convert_duration_to_sixteenths"><code class="docutils literal notranslate"><span class="pre">MusicPlayer.convert_duration_to_sixteenths()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="music_player.html#music_player.MusicPlayer.play_chant"><code class="docutils literal notranslate"><span class="pre">MusicPlayer.play_chant()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="music_player.html#music_player.MusicPlayer.play_fight_song"><code class="docutils literal notranslate"><span class="pre">MusicPlayer.play_fight_song()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="music_player.html#music_player.MusicPlayer.play_music"><code class="docutils literal notranslate"><span class="pre">MusicPlayer.play_music()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="music_player.html#music_player.MusicPlayer.play_music_with_lights"><code class="docutils literal notranslate"><span class="pre">MusicPlayer.play_music_with_lights()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="physical_actions.html">physical_actions module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="physical_actions.html#physical_actions.PhysicalActions"><code class="docutils literal notranslate"><span class="pre">PhysicalActions</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="physical_actions.html#physical_actions.PhysicalActions.shaken"><code class="docutils literal notranslate"><span class="pre">PhysicalActions.shaken()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="physical_actions.html#physical_actions.PhysicalActions.tapped"><code class="docutils literal notranslate"><span class="pre">PhysicalActions.tapped()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sync_manager.html">sync_manager module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sync_manager.html#sync_manager.SyncManager"><code class="docutils literal notranslate"><span class="pre">SyncManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sync_manager.html#sync_manager.SyncManager.broadcast_pattern"><code class="docutils literal notranslate"><span class="pre">SyncManager.broadcast_pattern()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sync_manager.html#sync_manager.SyncManager.get_connection_status"><code class="docutils literal notranslate"><span class="pre">SyncManager.get_connection_status()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sync_manager.html#sync_manager.SyncManager.receive_pattern"><code class="docutils literal notranslate"><span class="pre">SyncManager.receive_pattern()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sync_manager.html#sync_manager.SyncManager.try_connect_to_leader"><code class="docutils literal notranslate"><span class="pre">SyncManager.try_connect_to_leader()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ufo_ai_behaviors.html">ufo_ai_behaviors module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ufo_ai_behaviors.html#ufo_ai_behaviors.UFOAIBehaviors"><code class="docutils literal notranslate"><span class="pre">UFOAIBehaviors</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ufo_ai_behaviors.html#ufo_ai_behaviors.UFOAIBehaviors.execute_behavior"><code class="docutils literal notranslate"><span class="pre">UFOAIBehaviors.execute_behavior()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ufo_ai_core.html">ufo_ai_core module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ufo_ai_core.html#ufo_ai_core.UFOAICore"><code class="docutils literal notranslate"><span class="pre">UFOAICore</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ufo_ai_core.html#ufo_ai_core.UFOAICore.make_intelligent_decision"><code class="docutils literal notranslate"><span class="pre">UFOAICore.make_intelligent_decision()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_ai_core.html#ufo_ai_core.UFOAICore.record_successful_attention"><code class="docutils literal notranslate"><span class="pre">UFOAICore.record_successful_attention()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_ai_core.html#ufo_ai_core.UFOAICore.should_make_decision"><code class="docutils literal notranslate"><span class="pre">UFOAICore.should_make_decision()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ufo_college_system.html">ufo_college_system module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ufo_college_system.html#ufo_college_system.UFOCollegeSystem"><code class="docutils literal notranslate"><span class="pre">UFOCollegeSystem</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ufo_college_system.html#ufo_college_system.UFOCollegeSystem.check_for_random_college_behavior"><code class="docutils literal notranslate"><span class="pre">UFOCollegeSystem.check_for_random_college_behavior()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_college_system.html#ufo_college_system.UFOCollegeSystem.detect_college_chant"><code class="docutils literal notranslate"><span class="pre">UFOCollegeSystem.detect_college_chant()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_college_system.html#ufo_college_system.UFOCollegeSystem.execute_college_celebration"><code class="docutils literal notranslate"><span class="pre">UFOCollegeSystem.execute_college_celebration()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_college_system.html#ufo_college_system.UFOCollegeSystem.get_college_behavior_modifier"><code class="docutils literal notranslate"><span class="pre">UFOCollegeSystem.get_college_behavior_modifier()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_college_system.html#ufo_college_system.UFOCollegeSystem.get_college_colors"><code class="docutils literal notranslate"><span class="pre">UFOCollegeSystem.get_college_colors()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_college_system.html#ufo_college_system.UFOCollegeSystem.is_college_celebration_ready"><code class="docutils literal notranslate"><span class="pre">UFOCollegeSystem.is_college_celebration_ready()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_college_system.html#ufo_college_system.UFOCollegeSystem.set_chant_detection_enabled"><code class="docutils literal notranslate"><span class="pre">UFOCollegeSystem.set_chant_detection_enabled()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_college_system.html#ufo_college_system.UFOCollegeSystem.update_school_spirit"><code class="docutils literal notranslate"><span class="pre">UFOCollegeSystem.update_school_spirit()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ufo_intelligence.html">ufo_intelligence module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ufo_intelligence.html#ufo_intelligence.UFOIntelligence"><code class="docutils literal notranslate"><span class="pre">UFOIntelligence</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ufo_intelligence.html#ufo_intelligence.UFOIntelligence.cleanup"><code class="docutils literal notranslate"><span class="pre">UFOIntelligence.cleanup()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_intelligence.html#ufo_intelligence.UFOIntelligence.energy_level"><code class="docutils literal notranslate"><span class="pre">UFOIntelligence.energy_level</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_intelligence.html#ufo_intelligence.UFOIntelligence.last_interaction"><code class="docutils literal notranslate"><span class="pre">UFOIntelligence.last_interaction</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_intelligence.html#ufo_intelligence.UFOIntelligence.mood"><code class="docutils literal notranslate"><span class="pre">UFOIntelligence.mood</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_intelligence.html#ufo_intelligence.UFOIntelligence.record_successful_attention"><code class="docutils literal notranslate"><span class="pre">UFOIntelligence.record_successful_attention()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_intelligence.html#ufo_intelligence.UFOIntelligence.run"><code class="docutils literal notranslate"><span class="pre">UFOIntelligence.run()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_intelligence.html#ufo_intelligence.UFOIntelligence.validate_initialization"><code class="docutils literal notranslate"><span class="pre">UFOIntelligence.validate_initialization()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ufo_learning.html">ufo_learning module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ufo_learning.html#ufo_learning.UFOLearningSystem"><code class="docutils literal notranslate"><span class="pre">UFOLearningSystem</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ufo_learning.html#ufo_learning.UFOLearningSystem.cleanup_memory"><code class="docutils literal notranslate"><span class="pre">UFOLearningSystem.cleanup_memory()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_learning.html#ufo_learning.UFOLearningSystem.collect_sensor_data_enhanced"><code class="docutils literal notranslate"><span class="pre">UFOLearningSystem.collect_sensor_data_enhanced()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_learning.html#ufo_learning.UFOLearningSystem.update_learning"><code class="docutils literal notranslate"><span class="pre">UFOLearningSystem.update_learning()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ufo_memory_manager.html">ufo_memory_manager module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ufo_memory_manager.html#ufo_memory_manager.UFOMemoryManager"><code class="docutils literal notranslate"><span class="pre">UFOMemoryManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ufo_memory_manager.html#ufo_memory_manager.UFOMemoryManager.cleanup_memory"><code class="docutils literal notranslate"><span class="pre">UFOMemoryManager.cleanup_memory()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_memory_manager.html#ufo_memory_manager.UFOMemoryManager.ensure_memory_structure"><code class="docutils literal notranslate"><span class="pre">UFOMemoryManager.ensure_memory_structure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_memory_manager.html#ufo_memory_manager.UFOMemoryManager.record_college_interaction"><code class="docutils literal notranslate"><span class="pre">UFOMemoryManager.record_college_interaction()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_memory_manager.html#ufo_memory_manager.UFOMemoryManager.record_experience"><code class="docutils literal notranslate"><span class="pre">UFOMemoryManager.record_experience()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_memory_manager.html#ufo_memory_manager.UFOMemoryManager.record_successful_attention"><code class="docutils literal notranslate"><span class="pre">UFOMemoryManager.record_successful_attention()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufo_memory_manager.html#ufo_memory_manager.UFOMemoryManager.update_memory"><code class="docutils literal notranslate"><span class="pre">UFOMemoryManager.update_memory()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
@@ -111,68 +331,52 @@
     </div>
 </search>
 <script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="code.html">code module</a></li>
+<p class="caption" role="heading"><span class="caption-text">Core System</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="config_manager.html">config_manager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="memory_manager.html">memory_manager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interaction_manager.html">interaction_manager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="light_manager.html">light_manager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_manager.html">hardware_manager module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Operating Routines</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="ufo_intelligence.html">ufo_intelligence module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ufo_ai_behaviors.html">ufo_ai_behaviors module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ufo_ai_core.html">ufo_ai_core module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ufo_college_system.html">ufo_college_system module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ufo_learning.html">ufo_learning module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ufo_memory_manager.html">ufo_memory_manager module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intergalactic_cruising.html">intergalactic_cruising module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="audio_processor.html">audio_processor module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bluetooth_controller.html">bluetooth_controller module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="meditate.html">meditate module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dance_party.html">dance_party module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="base_routine.html">base_routine module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chant_detector.html">chant_detector module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="config_manager.html">config_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="college_manager.html">college_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hardware_manager.html">hardware_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="interaction_manager.html">interaction_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="light_manager.html">light_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memory_manager.html">memory_manager module</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">ILLO</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="audio_processor.html">audio_processor module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="base_routine.html">base_routine module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bluetooth_controller.html">bluetooth_controller module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="boot.html">boot module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chant_detector.html">chant_detector module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="code.html">code module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="college_manager.html">college_manager module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="color_utils.html">color_utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config_manager.html">config_manager module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dance_party.html">dance_party module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hardware_manager.html">hardware_manager module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="interaction_manager.html">interaction_manager module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="intergalactic_cruising.html">intergalactic_cruising module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="light_manager.html">light_manager module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="meditate.html">meditate module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory_manager.html">memory_manager module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="music_player.html">music_player module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="physical_actions.html">physical_actions module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sync_manager.html">sync_manager module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufo_ai_behaviors.html">ufo_ai_behaviors module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufo_ai_core.html">ufo_ai_core module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufo_college_system.html">ufo_college_system module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufo_intelligence.html">ufo_intelligence module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufo_learning.html">ufo_learning module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufo_memory_manager.html">ufo_memory_manager module</a></li>
 </ul>
-</li>
+<p class="caption" role="heading"><span class="caption-text">UFO AI Subsystems</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ufo_ai_core.html">ufo_ai_core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ufo_ai_behaviors.html">ufo_ai_behaviors module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ufo_learning.html">ufo_learning module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ufo_memory_manager.html">ufo_memory_manager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ufo_college_system.html">ufo_college_system module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Audio &amp; College Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="audio_processor.html">audio_processor module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="music_player.html">music_player module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="physical_actions.html">physical_actions module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chant_detector.html">chant_detector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="college_manager.html">college_manager module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bluetooth Systems</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="bluetooth_controller.html">bluetooth_controller module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sync_manager.html">sync_manager module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Utilities</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="color_utils.html">color_utils module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="physical_actions.html">physical_actions module</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="memory_manager.html" title="previous chapter">memory_manager module</a></li>
-      <li>Next: <a href="boot.html" title="next chapter">boot module</a></li>
   </ul></li>
 </ul>
 </div>

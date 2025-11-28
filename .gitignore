@@ -1,1 +1,20 @@
+# Python
 *.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Sphinx documentation
+docs/build/
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~

@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>dance_party module &#8212; ILLO 2.0.0 documentation</title>
+    <title>dance_party module &#8212; ILLO 2.0.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
-    <script src="_static/documentation_options.js?v=51b770b3"></script>
+    <script src="_static/documentation_options.js?v=f5cff4aa"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -33,8 +33,314 @@
 
           <div class="body" role="main">
             
-  <section id="dance-party-module">
-<h1>dance_party module<a class="headerlink" href="#dance-party-module" title="Link to this heading">¶</a></h1>
+  <section id="module-dance_party">
+<span id="dance-party-module"></span><h1>dance_party module<a class="headerlink" href="#module-dance_party" title="Link to this heading">¶</a></h1>
+<p>Dance Party Routine - Multi-UFO Synchronized Light Show via BLE.</p>
+<p>This module implements a synchronized dance party routine where multiple Circuit
+Playground Express devices can synchronize their NeoPixel displays over Bluetooth
+Low Energy (BLE) using advertisement names as the communication protocol.</p>
+<dl class="simple">
+<dt>The routine supports two roles:</dt><dd><ul class="simple">
+<li><p><strong>Leader</strong>: Audio-reactive display with beat detection (Mode 1)</p></li>
+<li><p><strong>Follower</strong>: Mirrors leader’s display in real-time (Modes 2-4)</p></li>
+</ul>
+</dd>
+<dt>Protocol Format:</dt><dd><p>ILLO_&lt;seq&gt;_&lt;pos1&gt;_&lt;int1&gt;_&lt;col1&gt;_&lt;pos2&gt;_&lt;int2&gt;_&lt;col2&gt;_&lt;pos3&gt;_&lt;int3&gt;_&lt;col3&gt;</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">dance_party</span><span class="w"> </span><span class="kn">import</span> <span class="n">DanceParty</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dance</span> <span class="o">=</span> <span class="n">DanceParty</span><span class="p">(</span><span class="s2">&quot;ILLO_01&quot;</span><span class="p">,</span> <span class="n">debug_bluetooth</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dance</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">volume</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Leader mode with audio (volume: 0=off, 1=on)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Author:</dt><dd><p>Charles Doebler — Feral Cat AI</p>
+</dd>
+<dt>Dependencies:</dt><dd><ul class="simple">
+<li><p>adafruit_circuitplayground</p></li>
+<li><p>adafruit_ble</p></li>
+<li><p>audio_processor (optional)</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The “volume” parameter throughout this module is a sound enable flag (0=off, 1=on)
+rather than an actual volume control, since the Circuit Playground Express piezo
+speaker has no volume adjustment capability. The naming is maintained for consistency
+with the hardware switch and other routines.</p>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="dance_party.DanceParty">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dance_party.</span></span><span class="sig-name descname"><span class="pre">DanceParty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_bluetooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_audio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dance_party.DanceParty" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base_routine.html#base_routine.BaseRoutine" title="base_routine.BaseRoutine"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRoutine</span></code></a></p>
+<p>Leader/follower visual synchronization over BLE advertisement names.</p>
+<p>This class implements a synchronized light show routine where one device acts
+as a leader (audio-reactive) and others follow by mirroring the leader’s display.</p>
+<dl class="simple">
+<dt>The visual display consists of three pixels that form an animated baton:</dt><dd><ul class="simple">
+<li><p>Head pixel: Full intensity at current position</p></li>
+<li><p>Trail1: 55% intensity, follows head by 1 step</p></li>
+<li><p>Trail2/Spark: Temporary beat effect at 75% intensity</p></li>
+</ul>
+</dd>
+<dt>Audio processing features (leader mode):</dt><dd><ul class="simple">
+<li><p>Two-stage smoothing prevents visual jitter</p></li>
+<li><p>Hysteretic color switching prevents rapid flickering</p></li>
+<li><p>Beat detection triggers direction changes and visual effects</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dance_party.DanceParty.device_name">
+<span class="sig-name descname"><span class="pre">device_name</span></span><a class="headerlink" href="#dance_party.DanceParty.device_name" title="Link to this definition">¶</a></dt>
+<dd><p>BLE device identifier</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dance_party.DanceParty.debug_bluetooth">
+<span class="sig-name descname"><span class="pre">debug_bluetooth</span></span><a class="headerlink" href="#dance_party.DanceParty.debug_bluetooth" title="Link to this definition">¶</a></dt>
+<dd><p>Enable verbose BLE debugging output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dance_party.DanceParty.debug_audio">
+<span class="sig-name descname"><span class="pre">debug_audio</span></span><a class="headerlink" href="#dance_party.DanceParty.debug_audio" title="Link to this definition">¶</a></dt>
+<dd><p>Enable verbose audio processing output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dance_party.DanceParty.sync_enabled">
+<span class="sig-name descname"><span class="pre">sync_enabled</span></span><a class="headerlink" href="#dance_party.DanceParty.sync_enabled" title="Link to this definition">¶</a></dt>
+<dd><p>Whether BLE sync is enabled via config</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dance_party.DanceParty.sync_active">
+<span class="sig-name descname"><span class="pre">sync_active</span></span><a class="headerlink" href="#dance_party.DanceParty.sync_active" title="Link to this definition">¶</a></dt>
+<dd><p>Whether BLE is currently initialized and active</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dance_party.DanceParty.ble">
+<span class="sig-name descname"><span class="pre">ble</span></span><a class="headerlink" href="#dance_party.DanceParty.ble" title="Link to this definition">¶</a></dt>
+<dd><p>BLE radio instance (None if not initialized)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>BLERadio</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="simple">
+<dt>Class Attributes:</dt><dd><p>_NUM_PIXELS (int): Number of NeoPixels on the device (10)
+_BRIGHTNESS (float): Global brightness setting (0.0-1.0)
+_STEP_MS (int): Time between position updates in milliseconds
+_ADV_PERIOD_MS (int): BLE advertisement refresh rate in milliseconds
+_SCAN_BURST_S (float): Follower scan duration in seconds
+_LOSS_TIMEOUT_S (float): Follower timeout before declaring leader lost
+_MIN_RENDER_MS (int): Minimum time between render updates (rate limiting)
+_SMOOTH_ALPHA (float): Exponential smoothing factor for follower (0.0-1.0)</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Leader mode with debugging</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">leader</span> <span class="o">=</span> <span class="n">DanceParty</span><span class="p">(</span><span class="s2">&quot;LEADER_01&quot;</span><span class="p">,</span> <span class="n">debug_bluetooth</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">debug_audio</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">leader</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">volume</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># volume: 0=off, 1=on</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Follower mode</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">follower</span> <span class="o">=</span> <span class="n">DanceParty</span><span class="p">(</span><span class="s2">&quot;FOLLOWER_02&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">follower</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">volume</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># silent follower</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>Mode 1 is always Leader</p></li>
+<li><p>Modes 2-4 are always Follower (safe default for undefined modes)</p></li>
+<li><p>Follower mode ignores audio input and mirrors leader visuals</p></li>
+<li><p>Volume parameter is a sound on/off flag, not actual volume control</p></li>
+</ul>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="dance_party.DanceParty.cleanup">
+<span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dance_party.DanceParty.cleanup" title="Link to this definition">¶</a></dt>
+<dd><p>Clean shutdown of Dance Party resources.</p>
+<p>Called by code.py when switching routines. Stops all BLE operations,
+clears NeoPixel display, and reports cleanup status if debugging.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>Safe to call multiple times</p></li>
+<li><p>Catches and logs all exceptions during cleanup</p></li>
+<li><p>Always attempts to clear pixels even if BLE cleanup fails</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dance_party.DanceParty.enable_bluetooth">
+<span class="sig-name descname"><span class="pre">enable_bluetooth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dance_party.DanceParty.enable_bluetooth" title="Link to this definition">¶</a></dt>
+<dd><p>Enable Bluetooth if not already active.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if BLE is active after call, False otherwise</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is called by code.py to enable BLE dynamically.
+Safe to call multiple times - idempotent operation.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dance_party.DanceParty.get_debug_status">
+<span class="sig-name descname"><span class="pre">get_debug_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dance_party.DanceParty.get_debug_status" title="Link to this definition">¶</a></dt>
+<dd><p>Return current status for debugging and monitoring.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>Status dictionary with the following keys:</dt><dd><ul class="simple">
+<li><p>sync_active (bool): Whether BLE is initialized</p></li>
+<li><p>seq (int): Current sequence number</p></li>
+<li><p>free_memory (int): Available memory in bytes</p></li>
+<li><p>sync_success (int): Successful sync count (follower)</p></li>
+<li><p>sync_fail (int): Failed sync count (follower)</p></li>
+<li><p>last_seen_age (float): Seconds since last leader packet (follower)</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dance</span> <span class="o">=</span> <span class="n">DanceParty</span><span class="p">(</span><span class="s2">&quot;ILLO_01&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span> <span class="o">=</span> <span class="n">dance</span><span class="o">.</span><span class="n">get_debug_status</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">status</span><span class="p">[</span><span class="s1">&#39;free_memory&#39;</span><span class="p">])</span>
+<span class="go">45632</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dance_party.DanceParty.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dance_party.DanceParty.run" title="Link to this definition">¶</a></dt>
+<dd><p>Main execution loop for Dance Party routine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mode</strong> (<em>int</em>) – Determines role. 1=Leader, 2-4=Follower (safe default)</p></li>
+<li><p><strong>volume</strong> (<em>int</em>) – Sound enable flag (0=off, 1=on). Note: Called “volume” for
+consistency with hardware switch, but acts as boolean since
+piezo speaker has no actual volume control. Passed to audio
+processor for compatibility with other routines.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>Called repeatedly by main event loop in code.py</p></li>
+<li><p>Leader mode: Draws audio-reactive visuals and broadcasts via BLE</p></li>
+<li><p>Follower mode: Scans for leader and mirrors received visuals</p></li>
+<li><p>Falls back to local audio visualization if BLE unavailable</p></li>
+</ul>
+</div>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dance</span> <span class="o">=</span> <span class="n">DanceParty</span><span class="p">(</span><span class="s2">&quot;ILLO_01&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">dance</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">volume</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Leader with audio (sound enabled)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dance_party.DanceParty.set_custom_responsiveness">
+<span class="sig-name descname"><span class="pre">set_custom_responsiveness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adv_period_ms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_alpha</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dance_party.DanceParty.set_custom_responsiveness" title="Link to this definition">¶</a></dt>
+<dd><p>Set custom responsiveness parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adv_period_ms</strong> (<em>int</em>) – Advertisement period in milliseconds (50-200)</p></li>
+<li><p><strong>smooth_alpha</strong> (<em>float</em>) – Smoothing factor 0.0-1.0 (higher = snappier)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if parameters were valid and applied</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dance</span> <span class="o">=</span> <span class="n">DanceParty</span><span class="p">(</span><span class="s2">&quot;ILLO_01&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dance</span><span class="o">.</span><span class="n">set_custom_responsiveness</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mf">0.92</span><span class="p">)</span>  <span class="c1"># Custom tuning</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dance_party.DanceParty.set_responsiveness">
+<span class="sig-name descname"><span class="pre">set_responsiveness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'balanced'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dance_party.DanceParty.set_responsiveness" title="Link to this definition">¶</a></dt>
+<dd><p>Adjust synchronization responsiveness with preset modes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mode</strong> (<em>str</em>) – One of “fast”, “balanced”, or “smooth”
+- “fast”: Maximum responsiveness (50ms ads, 0.95 alpha)
+- “balanced”: Good balance (80ms ads, 0.90 alpha) [DEFAULT]
+- “smooth”: Smoother motion (120ms ads, 0.70 alpha)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if mode was applied successfully</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dance</span> <span class="o">=</span> <span class="n">DanceParty</span><span class="p">(</span><span class="s2">&quot;ILLO_01&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dance</span><span class="o">.</span><span class="n">set_responsiveness</span><span class="p">(</span><span class="s2">&quot;fast&quot;</span><span class="p">)</span>  <span class="c1"># Maximum responsiveness</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dance</span><span class="o">.</span><span class="n">set_responsiveness</span><span class="p">(</span><span class="s2">&quot;smooth&quot;</span><span class="p">)</span>  <span class="c1"># Battery-saving smooth mode</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -63,60 +369,50 @@
     </div>
 </search>
 <script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+<p class="caption" role="heading"><span class="caption-text">Core System</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="code.html">code module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ufo_intelligence.html">ufo_intelligence module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ufo_ai_behaviors.html">ufo_ai_behaviors module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ufo_ai_core.html">ufo_ai_core module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ufo_college_system.html">ufo_college_system module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ufo_learning.html">ufo_learning module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ufo_memory_manager.html">ufo_memory_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intergalactic_cruising.html">intergalactic_cruising module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="audio_processor.html">audio_processor module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bluetooth_controller.html">bluetooth_controller module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="meditate.html">meditate module</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">dance_party module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="base_routine.html">base_routine module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chant_detector.html">chant_detector module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config_manager.html">config_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="college_manager.html">college_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hardware_manager.html">hardware_manager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="memory_manager.html">memory_manager module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interaction_manager.html">interaction_manager module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="light_manager.html">light_manager module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memory_manager.html">memory_manager module</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ILLO</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="audio_processor.html">audio_processor module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="base_routine.html">base_routine module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bluetooth_controller.html">bluetooth_controller module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="boot.html">boot module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chant_detector.html">chant_detector module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="code.html">code module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="college_manager.html">college_manager module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="color_utils.html">color_utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config_manager.html">config_manager module</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">dance_party module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hardware_manager.html">hardware_manager module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="interaction_manager.html">interaction_manager module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="intergalactic_cruising.html">intergalactic_cruising module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="light_manager.html">light_manager module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="meditate.html">meditate module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory_manager.html">memory_manager module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="music_player.html">music_player module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="physical_actions.html">physical_actions module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sync_manager.html">sync_manager module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufo_ai_behaviors.html">ufo_ai_behaviors module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufo_ai_core.html">ufo_ai_core module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufo_college_system.html">ufo_college_system module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufo_intelligence.html">ufo_intelligence module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufo_learning.html">ufo_learning module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufo_memory_manager.html">ufo_memory_manager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_manager.html">hardware_manager module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Operating Routines</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ufo_intelligence.html">ufo_intelligence module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intergalactic_cruising.html">intergalactic_cruising module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="meditate.html">meditate module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">dance_party module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dance_party.DanceParty"><code class="docutils literal notranslate"><span class="pre">DanceParty</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="base_routine.html">base_routine module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">UFO AI Subsystems</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ufo_ai_core.html">ufo_ai_core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ufo_ai_behaviors.html">ufo_ai_behaviors module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ufo_learning.html">ufo_learning module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ufo_memory_manager.html">ufo_memory_manager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ufo_college_system.html">ufo_college_system module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Audio &amp; College Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="audio_processor.html">audio_processor module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="music_player.html">music_player module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="physical_actions.html">physical_actions module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chant_detector.html">chant_detector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="college_manager.html">college_manager module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bluetooth Systems</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="bluetooth_controller.html">bluetooth_controller module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sync_manager.html">sync_manager module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Utilities</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="color_utils.html">color_utils module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="physical_actions.html">physical_actions module</a></li>
 </ul>
 
 <div class="relations">
