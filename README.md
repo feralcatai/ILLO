@@ -9,15 +9,16 @@ while gracefully hovering in midair.
 
 **✨ Made in the USA | ♻️ 100% Recycled PETG | 🧠 Open Source AI**
 
-**🛍️ [Available for Purchase](https://feralcatai.com) | 🛠️ [Open Source DIY](https://makerworld.com/en/models/2034343-illo-intelligent-levitating-ufo-companion#profileId-2194168)**
+**🎓 [STEM Kit Available](https://feralcatai.com) | 📚 [Full Documentation](https://feralcatai.github.io/ILLO/) | 🛠️ [Open Source DIY](https://makerworld.com/en/models/2034343-illo-intelligent-levitating-ufo-companion#profileId-2194168)**
 
 ---
 
 ## 🏠 Perfect For...
 
+- **🎓 STEM Education**: Hands-on AI, hardware, and programming learning experience
 - **🧘‍♀️ Meditation & Mindfulness**: Guided breathing patterns with adaptive lighting
 - **🎵 Music Lovers**: Real-time beat detection and synchronized light shows
-- **🎓 College Fans**: Rep your team with authentic fight songs and team colors
+- **🏈 College Fans**: Rep your team with authentic fight songs and team colors
 - **🌙 Smart Home Ambience**: Auto-dimming night light that senses room brightness
 - **🤖 AI Enthusiasts**: Watch genuine machine learning in action as it builds personality
 - **🎁 Unique Gifts**: The perfect conversation starter and tech showcase
@@ -119,6 +120,16 @@ Music visualization mode:
 
 ## 🌟 Why Choose ILLO?
 
+### **STEM Education Value**
+
+Perfect for learning and teaching:
+
+- Hands-on AI and machine learning concepts
+- CircuitPython programming experience
+- Hardware integration and sensors
+- 3D printing and design skills
+- Perfect for classrooms, makerspaces, and home education
+
 ### **Sustainable Technology**
 
 - 3D printed with 100% recycled PETG plastic
@@ -189,29 +200,37 @@ Not just pre-programmed responses—ILLO actually learns:
     - Watch ILLO come to life with AI intelligence
     - Start interacting—it learns from you immediately
 
-**📚 Full setup guide**: See `docs/ILLO_Quick_Start_Guide.md`
+**📚 Documentation:**
+- [Complete API Documentation](https://feralcatai.github.io/ILLO/) - Full technical reference
+- [Quick Start Guide](docs/ILLO_Quick_Start_Guide.md) - Step-by-step setup
 
 ---
 
 ## 🛒 Where to Get ILLO
 
-### **🛍️ Purchase Ready-Made**
+### **🎓 STEM Kit (Primary Product)**
 
-Get your ILLO fully assembled and ready to go:
+The ILLO STEM Kit includes everything you need except the 3D printed UFO enclosure:
 
 - **Official Store**: [feralcatai.com](https://feralcatai.com)
-- Includes complete hardware, pre-installed firmware, and levitation platform
-- Made in the USA with 100% recycled PETG
-- Ships ready to use—just power on and start interacting
+- ✅ Circuit Playground Bluefruit (pre-programmed with ILLO firmware)
+- ✅ Magnetic levitation platform
+- ✅ Rechargeable battery and charging cable
+- ✅ Complete documentation and setup guide
+- 🛠️ You provide: 3D printed UFO enclosure ([download files here](https://makerworld.com/en/models/2034343-illo-intelligent-levitating-ufo-companion#profileId-2194168))
+- Perfect for makers, educators, and STEM enthusiasts
+- Made in the USA with quality components
 
-### **🛠️ Build Your Own (DIY)**
+**Limited Complete Kits Available**: A few fully assembled units (including 3D printed UFO) are available at [feralcatai.com](https://feralcatai.com)
 
-Prefer to 3D print and build yourself? Everything you need is open source:
+### **🛠️ Full DIY (Free & Open Source)**
+
+Build everything yourself using open source files:
 
 - **3D Print Files**: [Maker World](https://makerworld.com/en/models/2034343-illo-intelligent-levitating-ufo-companion#profileId-2194168)
 - **Hardware**: [Adafruit Circuit Playground Bluefruit](https://www.adafruit.com/product/4333)
 - **Firmware**: Clone this repository and follow the Quick Start Guide
-- **Levitation Platform**: Compatible with standard magnetic levitation UFO platforms
+- **Levitation Platform**: Source your own compatible magnetic levitation UFO platform
 
 ---
 
@@ -226,11 +245,13 @@ Prefer to 3D print and build yourself? Everything you need is open source:
 
 **Get Your ILLO:**
 
-- 🛍️ **[Purchase at feralcatai.com](https://feralcatai.com)** - Fully assembled and ready to use
-- 🛠️ **[Download 3D Files](https://makerworld.com/en/models/2034343-illo-intelligent-levitating-ufo-companion#profileId-2194168)** - Build your own
+- 🎓 **[STEM Kit at feralcatai.com](https://feralcatai.com)** - Hardware + firmware, you print the UFO
+- 🛍️ **[Complete Kit](https://feralcatai.com)** - Limited availability, fully assembled
+- 🛠️ **[Download 3D Files](https://makerworld.com/en/models/2034343-illo-intelligent-levitating-ufo-companion#profileId-2194168)** - Free open source DIY
 
 **Documentation & Support:**
 
+- 📚 **[Complete API Documentation](https://feralcatai.github.io/ILLO/)** - Full technical reference
 - 📖 [Quick Start Guide](docs/ILLO_Quick_Start_Guide.md) - Setup in minutes
 - ⚙️ [Configuration Guide](docs/ILLO_Device_Configuration_Guide.md) - Customize everything
 - 🎓 [Add Your College](colleges/(college).json) - Penn State included, yours next
