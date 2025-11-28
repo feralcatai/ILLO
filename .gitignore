@@ -12,6 +12,10 @@ venv/
 env/
 ENV/
 
+# Build artifacts
+dist/
+*.zip
+
 # IDE
 .idea/
 .vscode/

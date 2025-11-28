@@ -5,44 +5,96 @@ import threading
 import sys
 
 class CircuitPlaygroundSerial:
-    def __init__(self, port='COM7', baudrate=115200):
+    def __init__(self, port=None, baudrate=115200):
         self.port = port
         self.baudrate = baudrate
         self.serial_connection = None
         self.running = False
-        
-    def find_circuitpython_port(self):
-        """Automatically find CircuitPython device port"""
+
+    def find_circuitpython_ports(self):
+        """Find all CircuitPython device ports"""
         ports = serial.tools.list_ports.comports()
+        circuitpython_ports = []
         for port in ports:
             # CircuitPython devices typically show up with these identifiers
-            if any(identifier in port.description.lower() for identifier in 
+            if any(identifier in port.description.lower() for identifier in
                    ['circuitpython', 'circuit playground', 'adafruit']):
-                print(f"Found CircuitPython device on {port.device}")
-                return port.device
-        return None
+                circuitpython_ports.append(port)
+        return circuitpython_ports
+
+    def select_port(self):
+        """Interactively select a port from available options"""
+        cp_ports = self.find_circuitpython_ports()
+
+        if not cp_ports:
+            print("No CircuitPython devices found.")
+            # Show all available ports as fallback
+            all_ports = list(serial.tools.list_ports.comports())
+            if not all_ports:
+                print("No serial ports available on this system.")
+                return None
+
+            print("\nAvailable serial ports:")
+            for idx, port in enumerate(all_ports, 1):
+                print(f"  {idx}. {port.device} - {port.description}")
+
+            try:
+                choice = input("\nSelect port number (or 'q' to quit): ").strip()
+                if choice.lower() == 'q':
+                    return None
+                port_idx = int(choice) - 1
+                if 0 <= port_idx < len(all_ports):
+                    return all_ports[port_idx].device
+                else:
+                    print("Invalid selection")
+                    return None
+            except (ValueError, KeyboardInterrupt):
+                return None
+
+        elif len(cp_ports) == 1:
+            # Auto-select if only one CircuitPython device found
+            selected = cp_ports[0]
+            print(f"Found CircuitPython device: {selected.device} - {selected.description}")
+            return selected.device
+
+        else:
+            # Multiple CircuitPython devices found, let user choose
+            print("Multiple CircuitPython devices found:")
+            for idx, port in enumerate(cp_ports, 1):
+                print(f"  {idx}. {port.device} - {port.description}")
+
+            try:
+                choice = input("\nSelect port number (or 'q' to quit): ").strip()
+                if choice.lower() == 'q':
+                    return None
+                port_idx = int(choice) - 1
+                if 0 <= port_idx < len(cp_ports):
+                    return cp_ports[port_idx].device
+                else:
+                    print("Invalid selection")
+                    return None
+            except (ValueError, KeyboardInterrupt):
+                return None
     
     def connect(self):
         """Connect to the Circuit Playground"""
         try:
-            # Auto-detect port if not specified
-            if not self.port or self.port == 'AUTO':
-                detected_port = self.find_circuitpython_port()
-                if detected_port:
-                    self.port = detected_port
-                else:
-                    print("No CircuitPython device found")
+            # Auto-select port if not specified
+            if not self.port:
+                self.port = self.select_port()
+                if not self.port:
+                    print("No port selected")
                     return False
-            
+
             self.serial_connection = serial.Serial(
                 port=self.port,
                 baudrate=self.baudrate,
                 timeout=0.1,
                 write_timeout=1
             )
-            print(f"Connected to {self.port} at {self.baudrate} baud")
+            print(f"\nConnected to {self.port} at {self.baudrate} baud")
             return True
-            
+
         except serial.SerialException as e:
             print(f"Failed to connect to {self.port}: {e}")
             return False
@@ -98,8 +150,20 @@ class CircuitPlaygroundSerial:
             print("Serial connection closed")
 
 def main():
-    # You can specify the port or use 'AUTO' for auto-detection
-    monitor = CircuitPlaygroundSerial(port='COM7', baudrate=115200)
+    """
+    Main entry point for the serial monitor.
+
+    Usage:
+        python serial_monitor.py              # Auto-detect and select port
+        python serial_monitor.py COM7         # Use specific port
+    """
+    port = None
+    if len(sys.argv) > 1:
+        # Port specified as command line argument
+        port = sys.argv[1]
+        print(f"Using specified port: {port}")
+
+    monitor = CircuitPlaygroundSerial(port=port, baudrate=115200)
     monitor.start_monitoring()
 
 if __name__ == "__main__":

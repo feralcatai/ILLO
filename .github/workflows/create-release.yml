@@ -1,0 +1,146 @@
+name: Create Release Package
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '*.py'
+      - 'lib/**'
+      - 'colleges/**'
+      - 'config.json'
+      - 'project.toml'
+  release:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      create_release:
+        description: 'Create a GitHub release'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+permissions:
+  contents: write
+
+jobs:
+  build-package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Extract version from project.toml
+        id: get_version
+        run: |
+          VERSION=$(grep -m 1 'version = ' project.toml | sed 's/.*version = "\(.*\)".*/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Detected version: $VERSION"
+
+      - name: Create deployment package
+        run: |
+          python tools/create_deployment_package.py
+
+      - name: Upload deployment package as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ILLO-CircuitPython-v${{ steps.get_version.outputs.version }}
+          path: dist/ILLO-CircuitPython-v${{ steps.get_version.outputs.version }}.zip
+          retention-days: 90
+
+      - name: Create GitHub Release
+        if: |
+          github.event_name == 'release' ||
+          (github.event_name == 'workflow_dispatch' && github.event.inputs.create_release == 'true')
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.get_version.outputs.version }}
+          name: ILLO v${{ steps.get_version.outputs.version }}
+          body: |
+            # ILLO CircuitPython Deployment Package v${{ steps.get_version.outputs.version }}
+
+            ## What's Included
+
+            This release contains the complete ILLO CircuitPython deployment package ready to flash to your Circuit Playground Bluefruit.
+
+            ### Features
+            - ✨ UFO Intelligence: AI-powered adaptive companion
+            - 🌌 Intergalactic Cruising: Ambient sci-fi lighting
+            - 🧘 Meditate: Breathing patterns for mindfulness
+            - 🎉 Dance Party: Multi-device synchronized light shows
+
+            ### Hardware Requirements
+            - Adafruit Circuit Playground Bluefruit (nRF52840)
+            - CircuitPython 9.0.4 or newer
+            - Magnetic levitation base (optional but recommended)
+
+            ## Installation
+
+            1. Download `ILLO-CircuitPython-v${{ steps.get_version.outputs.version }}.zip`
+            2. Extract all files from the ZIP
+            3. Connect your Circuit Playground Bluefruit via USB
+            4. Copy all extracted files to the `CIRCUITPY` drive
+            5. The device will restart automatically
+
+            For detailed instructions, see the included `DEPLOYMENT_README.txt`
+
+            ## Documentation
+
+            - 📚 [Full Documentation](https://feralcatai.github.io/ILLO/)
+            - 🚀 [Quick Start Guide](https://github.com/feralcatai/ILLO/blob/main/docs/ILLO_Quick_Start_Guide.md)
+            - ⚙️ [Configuration Guide](https://github.com/feralcatai/ILLO/blob/main/docs/ILLO_Device_Configuration_Guide.md)
+
+            ## Support
+
+            Found a bug or need help? [Open an issue](https://github.com/feralcatai/ILLO/issues)
+          files: |
+            dist/ILLO-CircuitPython-v${{ steps.get_version.outputs.version }}.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-summary:
+    needs: build-package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract version
+        id: get_version
+        run: |
+          VERSION=$(grep -m 1 'version = ' project.toml | sed 's/.*version = "\(.*\)".*/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create build summary
+        run: |
+          echo "## ILLO Deployment Package Built Successfully! ✓" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** v${{ steps.get_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Package Contents" >> $GITHUB_STEP_SUMMARY
+          echo "- CircuitPython code files (*.py)" >> $GITHUB_STEP_SUMMARY
+          echo "- Required libraries (lib/)" >> $GITHUB_STEP_SUMMARY
+          echo "- College configurations (colleges/)" >> $GITHUB_STEP_SUMMARY
+          echo "- Default configuration (config.json)" >> $GITHUB_STEP_SUMMARY
+          echo "- Deployment instructions (DEPLOYMENT_README.txt)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Download" >> $GITHUB_STEP_SUMMARY
+          echo "The deployment package is available as a build artifact for 90 days." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Creating a Release" >> $GITHUB_STEP_SUMMARY
+          echo "To create a GitHub release with this package:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Go to Actions → Create Release Package → Run workflow" >> $GITHUB_STEP_SUMMARY
+          echo "2. Set 'Create a GitHub release' to 'true'" >> $GITHUB_STEP_SUMMARY
+          echo "3. Run the workflow" >> $GITHUB_STEP_SUMMARY

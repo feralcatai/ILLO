@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(sphinx-build:*)",
-      "Bash(python -m sphinx:*)"
+      "Bash(python -m sphinx:*)",
+      "Bash(python tools/create_deployment_package.py:*)"
     ],
     "deny": [],
     "ask": []
