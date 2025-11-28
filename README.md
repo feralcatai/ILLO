@@ -9,6 +9,8 @@ while gracefully hovering in midair.
 
 **✨ Made in the USA | ♻️ 100% Recycled PETG | 🧠 Open Source AI**
 
+**🛍️ [Available for Purchase](https://feralcatai.com) | 🛠️ [Open Source DIY](https://makerworld.com/en/models/2034343-illo-intelligent-levitating-ufo-companion#profileId-2194168)**
+
 ---
 
 ## 🏠 Perfect For...
@@ -62,7 +64,7 @@ Music visualization mode:
 - Real-time FFT analysis for beat sync
 - Dynamic light shows matched to a tempo
 - College color overlays when triggered
-- Brightness control only (tap/shake/light disabled in v3.0)
+- Brightness control only (tap/shake/light interactions disabled)
 - Multi-UFO Bluetooth Sync: ILLOs near each other can synchronize beat pulses and scene
   changes using lightweight BLE messages—no phone app required. One ILLO is assigned the leader role; others follow.
 
@@ -191,6 +193,28 @@ Not just pre-programmed responses—ILLO actually learns:
 
 ---
 
+## 🛒 Where to Get ILLO
+
+### **🛍️ Purchase Ready-Made**
+
+Get your ILLO fully assembled and ready to go:
+
+- **Official Store**: [feralcatai.com](https://feralcatai.com)
+- Includes complete hardware, pre-installed firmware, and levitation platform
+- Made in the USA with 100% recycled PETG
+- Ships ready to use—just power on and start interacting
+
+### **🛠️ Build Your Own (DIY)**
+
+Prefer to 3D print and build yourself? Everything you need is open source:
+
+- **3D Print Files**: [Maker World](https://makerworld.com/en/models/2034343-illo-intelligent-levitating-ufo-companion#profileId-2194168)
+- **Hardware**: [Adafruit Circuit Playground Bluefruit](https://www.adafruit.com/product/4333)
+- **Firmware**: Clone this repository and follow the Quick Start Guide
+- **Levitation Platform**: Compatible with standard magnetic levitation UFO platforms
+
+---
+
 ## 🎓 Colleges
 
 - Built-in: Penn State
@@ -200,17 +224,22 @@ Not just pre-programmed responses—ILLO actually learns:
 
 ## 🚀 Ready to Launch?
 
-**Get Started Today:**
+**Get Your ILLO:**
 
-- 📖 [Quick Start Guide](docs/ILLO_Quick_Start_Guide.md)—Setup in minutes
-- ⚙️ [Configuration Guide](docs/ILLO_Device_Configuration_Guide.md)—Customize everything
-- 🎓 [Add Your College](colleges/(college).json)—Penn State included, yours next
+- 🛍️ **[Purchase at feralcatai.com](https://feralcatai.com)** - Fully assembled and ready to use
+- 🛠️ **[Download 3D Files](https://makerworld.com/en/models/2034343-illo-intelligent-levitating-ufo-companion#profileId-2194168)** - Build your own
+
+**Documentation & Support:**
+
+- 📖 [Quick Start Guide](docs/ILLO_Quick_Start_Guide.md) - Setup in minutes
+- ⚙️ [Configuration Guide](docs/ILLO_Device_Configuration_Guide.md) - Customize everything
+- 🎓 [Add Your College](colleges/(college).json) - Penn State included, yours next
 
 **Have Questions?**
 
-- 💬 [Open an Issue](https://github.com/cdoebler1/ILLO/issues)
-- 🌐 Visit our website at [feralcatai.com]
-- 📧 Contact: charles@feralcatai.com
+- 💬 [Open an Issue](https://github.com/feralcatai/ILLO/issues)
+- 🌐 Visit [feralcatai.com](https://feralcatai.com)
+- 📧 Email: charles@feralcatai.com
 
 ---
 

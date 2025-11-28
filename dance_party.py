@@ -1,7 +1,7 @@
 """Dance Party Routine - Multi-UFO Synchronized Light Show via BLE.
 
 This module implements a synchronized dance party routine where multiple Circuit
-Playground Express devices can synchronize their NeoPixel displays over Bluetooth
+Playground Bluefruit devices can synchronize their NeoPixel displays over Bluetooth
 Low Energy (BLE) using advertisement names as the communication protocol.
 
 The routine supports two roles:
@@ -26,7 +26,7 @@ Dependencies:
     
 Note:
     The "volume" parameter throughout this module is a sound enable flag (0=off, 1=on)
-    rather than an actual volume control, since the Circuit Playground Express piezo
+    rather than an actual volume control, since the Circuit Playground Bluefruit piezo
     speaker has no volume adjustment capability. The naming is maintained for consistency
     with the hardware switch and other routines.
 """

@@ -1,7 +1,7 @@
 [project]
 name = "illo"
 version = "2.0.1"
-description = "AI-Powered Levitating UFO Companion with Smart Environmental Sensing - Complete Release v3.0"
+description = "AI-Powered Levitating UFO Companion with Smart Environmental Sensing"
 authors = [
     {name = "Charles Doebler", email = "charles@feralcatai.com"}
 ]
@@ -51,14 +51,16 @@ classifiers = [
 requires-python = ">=3.7"
 
 [project.urls]
-homepage = "https://github.com/cdoebler1/ILLO"
-repository = "https://github.com/cdoebler1/ILLO"
-documentation = "https://github.com/cdoebler1/ILLO/blob/main/README.md"
-"Bug Reports" = "https://github.com/cdoebler1/ILLO/issues"
-"Source" = "https://github.com/cdoebler1/ILLO"
-"Changelog" = "https://github.com/cdoebler1/ILLO/releases"
-"Product Guide" = "https://github.com/cdoebler1/ILLO/blob/main/docs/ILLO_AIPoweredUFOEnhancedCompanion.md"
-"Configuration Guide" = "https://github.com/cdoebler1/ILLO/blob/main/docs/config_readme.txt"
+homepage = "https://github.com/feralcatai/ILLO"
+repository = "https://github.com/feralcatai/ILLO"
+documentation = "https://feralcatai.github.io/ILLO/"
+"API Documentation" = "https://feralcatai.github.io/ILLO/"
+"README" = "https://github.com/feralcatai/ILLO/blob/main/README.md"
+"Bug Reports" = "https://github.com/feralcatai/ILLO/issues"
+"Source" = "https://github.com/feralcatai/ILLO"
+"Changelog" = "https://github.com/feralcatai/ILLO/releases"
+"Product Guide" = "https://github.com/feralcatai/ILLO/blob/main/docs/ILLO_AIPoweredUFOEnhancedCompanion.md"
+"Configuration Guide" = "https://github.com/feralcatai/ILLO/blob/main/docs/config_readme.txt"
 
 # CircuitPython specific configuration - Production Ready
 [tool.circuitpython]
@@ -201,9 +203,7 @@ addopts = "-v --tb=short"
 
 # Version history - Production Release
 [changelog]
-"3.0.0" = "Initial production release - Complete AI companion with levitation integration, sustainable manufacturing"
-"2.1.0" = "Centralized light management, adaptive brightness control, enhanced college integration"
-"2.0.0" = "AI system with learning, college spirit integration, music recognition"
+"2.0.1" = "Initial production release - Complete AI companion with levitation integration, sustainable manufacturing"
 "1.0.0" = "Initial development release with basic UFO behaviors and audio visualization"
 
 # Release readiness
