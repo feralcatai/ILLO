@@ -142,33 +142,6 @@ Not just pre-programmed responses—ILLO actually learns:
 
 ---
 
-## 🌟 Why Choose ILLO?
-
-### **Sustainable Technology**
-
-- 3D printed with 100% recycled PETG plastic
-- Manufactured entirely in the USA
-- Energy-efficient algorithms for extended battery life
-- Open source for longevity and community innovation
-
-### **Genuine AI Learning**
-
-Not just pre-programmed responses—ILLO actually learns:
-
-- Develops unique personality traits
-- Remembers your interaction patterns
-- Adapts to your environment
-- Builds relationship trust over time
-
-### **Expandable & Customizable**
-
-- Add your college team with simple JSON files
-- Four distinct operating modes
-- Bluetooth control and multi-device sync
-- Open source for unlimited modifications
-
----
-
 ## ⚙️ Technical Highlights
 
 | Feature                 | Specification                                  |
