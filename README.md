@@ -203,6 +203,7 @@ Not just pre-programmed responses—ILLO actually learns:
 **📚 Documentation:**
 - [Complete API Documentation](https://feralcatai.github.io/ILLO/) - Full technical reference
 - [Quick Start Guide](docs/ILLO_Quick_Start_Guide.md) - Step-by-step setup
+- [Assembly Guide](docs/ILLO_Assembly_Guide.md) - Hardware assembly instructions (in progress)
 
 ---
 
@@ -253,7 +254,9 @@ Build everything yourself using open source files:
 
 - 📚 **[Complete API Documentation](https://feralcatai.github.io/ILLO/)** - Full technical reference
 - 📖 [Quick Start Guide](docs/ILLO_Quick_Start_Guide.md) - Setup in minutes
+- 🔧 [Assembly Guide](docs/ILLO_Assembly_Guide.md) - Hardware assembly (in progress)
 - ⚙️ [Configuration Guide](docs/ILLO_Device_Configuration_Guide.md) - Customize everything
+- 📡 [Bluetooth Control Guide](docs/ILLO_Bluetooth_Control_Guide.md) - Remote control setup
 - 🎓 [Add Your College](colleges/(college).json) - Penn State included, yours next
 
 **Have Questions?**

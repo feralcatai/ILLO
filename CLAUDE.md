@@ -292,6 +292,7 @@ debug_interactions = False
 ## Documentation Resources
 
 - **Quick Start:** `docs/ILLO_Quick_Start_Guide.md`
+- **Assembly Guide:** `docs/ILLO_Assembly_Guide.md` (hardware assembly instructions, in progress)
 - **Configuration:** `docs/ILLO_Device_Configuration_Guide.md`
 - **Bluetooth Control:** `docs/ILLO_Bluetooth_Control_Guide.md`
 - **API Docs:** `apidocs/` (Sphinx-generated)
