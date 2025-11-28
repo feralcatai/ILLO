@@ -47,7 +47,7 @@ Classic sci-fi mode:
 - Audio-reactive ambient glow
 - Perfect night light behavior
 - Light-based interactions off; brightness only
-- Bluetooth control availble (see below)
+- Bluetooth control available (see below)
 
 ### **3. Meditate 🧘**
 
