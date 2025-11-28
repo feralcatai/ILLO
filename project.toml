@@ -59,8 +59,10 @@ documentation = "https://feralcatai.github.io/ILLO/"
 "Bug Reports" = "https://github.com/feralcatai/ILLO/issues"
 "Source" = "https://github.com/feralcatai/ILLO"
 "Changelog" = "https://github.com/feralcatai/ILLO/releases"
-"Product Guide" = "https://github.com/feralcatai/ILLO/blob/main/docs/ILLO_AIPoweredUFOEnhancedCompanion.md"
-"Configuration Guide" = "https://github.com/feralcatai/ILLO/blob/main/docs/config_readme.txt"
+"Quick Start Guide" = "https://github.com/feralcatai/ILLO/blob/main/docs/ILLO_Quick_Start_Guide.md"
+"Assembly Guide" = "https://github.com/feralcatai/ILLO/blob/main/docs/ILLO_Assembly_Guide.md"
+"Configuration Guide" = "https://github.com/feralcatai/ILLO/blob/main/docs/ILLO_Device_Configuration_Guide.md"
+"Bluetooth Control Guide" = "https://github.com/feralcatai/ILLO/blob/main/docs/ILLO_Bluetooth_Control_Guide.md"
 
 # CircuitPython specific configuration - Production Ready
 [tool.circuitpython]
