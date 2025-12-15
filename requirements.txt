@@ -1,0 +1,33 @@
+# ILLO Production Dependencies - Version Pinned for Stability
+# Python Package Dependencies (for development/testing tools)
+# Last updated: 2025-11-28
+
+# Documentation generation
+docutils==0.21.2
+
+# Template engine (for any tooling/documentation)
+jinja2==3.1.4
+
+# HTTP library (for any API interactions during development)
+requests==2.32.3
+
+# Additional safe dependencies for Jinja2
+MarkupSafe==2.1.5
+
+# Note: CircuitPython runtime dependencies
+# These are bundled libraries from Adafruit CircuitPython Bundle
+# Download from: https://circuitpython.org/libraries
+# Recommended CircuitPython version: 10.0.3 (latest stable as of Nov 2025)
+#
+# Required CircuitPython Libraries (from Bundle):
+# - adafruit_circuitplayground (hardware interface)
+# - adafruit_ble (Bluetooth Low Energy support)
+# - adafruit_bluefruit_connect (BLE protocol helpers)
+# - adafruit_led_animation (LED effects - if used)
+# - neopixel (LED control)
+#
+# Standard CircuitPython modules (built-in):
+# - microcontroller
+# - time
+# - os
+# - gc (garbage collection)

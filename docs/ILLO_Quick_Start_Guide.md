@@ -184,12 +184,48 @@ Open `config.json` on your computer to customize:
 - : Development mode (read/write access) **Slide RIGHT + USB**
 - **No USB**: Full read/write operation with AI memory saving
 
-## 🔧 Troubleshooting
-### ILLO Won't Start
-- ✅ Check CircuitPython 9.0.4 is installed
-- ✅ Verify all required libraries are in folder `lib/`
-- ✅ Ensure all files are in the root directory `.py`
-- ✅ Check that has valid JSON syntax `config.json`
+## 🏭 Factory Reset
+
+### When to Use Factory Reset
+
+Restore ILLO to factory defaults in these situations:
+
+- 🔄 Starting fresh with a clean AI personality
+- 🧹 Clearing all saved data before giving/selling device
+- 🐛 Recovering from configuration errors or corruption
+- 🎓 Resetting between student sessions in educational settings
+- 🔒 Removing personal data for privacy
+
+### How to Perform Factory Reset
+
+**Step-by-Step:**
+
+1. **Power off ILLO** completely
+2. **Hold both Button A + Button B** simultaneously
+3. **Power on ILLO** while continuing to hold both buttons
+4. **Watch for pulsing red LEDs** (warning countdown - 3 seconds)
+5. **Keep holding** until LEDs flash green (confirmation)
+6. **Device will auto-reboot** with factory settings
+
+**Visual Feedback:**
+- 🔴 **Pulsing red** (intensifying): Countdown in progress
+- 🟢 **Three green flashes**: Factory reset successful
+- 🔵 **Normal startup**: Device rebooting with defaults
+
+### What Gets Reset
+
+✅ **Deleted:**
+- `config.json` - All settings restored to defaults
+- `ufo_memory.json` - AI personality and learning data cleared
+
+❌ **Preserved:**
+- All `.py` code files remain unchanged
+- `colleges/` folder and team data preserved
+- CircuitPython firmware unchanged
+
+### Factory Default Settings
+
+After factory reset, ILLO will have these settings:
 
 ### No Lights/Dim Lights
 - 💡 ILLO auto-adjusts brightness—try different lighting conditions

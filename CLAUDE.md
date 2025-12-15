@@ -179,7 +179,7 @@ If memory errors occur during development:
 
 ## College Integration System
 
-Colleges are defined as JSON files in `colleges/` directory (e.g., `penn_state.json`, `michigan.json`).
+Colleges are defined as JSON files in `colleges/` directory (e.g., `penn_state.json`).
 
 **Schema:**
 ```json

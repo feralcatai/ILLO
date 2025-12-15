@@ -62,7 +62,7 @@ import microcontroller
 import os
 
 # Version tracking
-VERSION = "2.0.2"
+VERSION = "2.0.3"
 
 # Debug Configuration - Set these flags to enable debug output
 debug_bluetooth = False
@@ -170,6 +170,106 @@ def _fs_writable_check():
         return True
     except OSError:
         return False
+
+
+def factory_reset():
+    """Perform factory reset by clearing memory and config files.
+
+    Deletes:
+        - ufo_memory.json (persistent UFO Intelligence data)
+        - config.json (user configuration)
+
+    Then reboots the device to start fresh with factory defaults.
+    """
+    print("[FACTORY RESET] 🏭 Initiating factory reset...")
+
+    files_to_delete = ['ufo_memory.json', 'config.json']
+    deleted_count = 0
+
+    for filename in files_to_delete:
+        try:
+            os.remove(filename)
+            print("[FACTORY RESET] ✅ Deleted: %s" % filename)
+            deleted_count += 1
+        except OSError:
+            # File doesn't exist or can't be deleted - that's okay
+            print("[FACTORY RESET] ⚠️ Could not delete %s (may not exist)" % filename)
+
+    # Show success feedback
+    print("[FACTORY RESET] ✨ Factory reset complete! Deleted %d file(s)" % deleted_count)
+    for _ in range(3):
+        cp.pixels.fill((0, 255, 0))
+        cp.pixels.show()
+        time.sleep(0.3)
+        cp.pixels.fill((0, 0, 0))
+        cp.pixels.show()
+        time.sleep(0.2)
+
+    print("[FACTORY RESET] 🚀 Rebooting...")
+    time.sleep(1)
+    microcontroller.reset()
+
+
+def check_factory_reset_combo():
+    """Check for factory reset button combo on boot.
+
+    Pattern: Hold both Button A + Button B during boot for 3 seconds
+    Visual: Pulsing red warning that intensifies, then green confirmation
+
+    Returns:
+        bool: True if factory reset was performed, False otherwise
+    """
+    # Check if both buttons are pressed at boot
+    if not (cp.button_a and cp.button_b):
+        return False
+
+    print("[FACTORY RESET] ⚠️ Factory reset combo detected!")
+    print("[FACTORY RESET] 🔴 Hold both buttons for 3 seconds to confirm...")
+
+    # Visual warning countdown (3 seconds)
+    hold_duration = 3.0
+    check_interval = 0.1
+    checks_needed = int(hold_duration / check_interval)
+
+    for i in range(checks_needed):
+        # Check if buttons are still held
+        if not (cp.button_a and cp.button_b):
+            print("[FACTORY RESET] ❌ Cancelled - buttons released")
+            cp.pixels.fill((0, 0, 0))
+            cp.pixels.show()
+            return False
+
+        # Pulsing red warning (intensity increases over time)
+        progress = i / checks_needed
+        intensity = int(50 + (205 * progress))  # 50 to 255
+        cp.pixels.fill((intensity, 0, 0))
+        cp.pixels.show()
+        time.sleep(check_interval)
+
+    # Final check - both buttons still held?
+    if cp.button_a and cp.button_b:
+        print("[FACTORY RESET] ✅ Confirmed - performing factory reset!")
+
+        # Check if filesystem is writable
+        if not _fs_writable_check():
+            print("[FACTORY RESET] ❌ Cannot reset - USB is mounted (read-only)")
+            print("[FACTORY RESET] 💡 Unplug USB cable and power from battery to reset")
+
+            # Flash yellow warning
+            for _ in range(5):
+                cp.pixels.fill((255, 255, 0))
+                cp.pixels.show()
+                time.sleep(0.2)
+                cp.pixels.fill((0, 0, 0))
+                cp.pixels.show()
+                time.sleep(0.2)
+
+            return False
+
+        factory_reset()
+        return True
+
+    return False
 
 
 def show_routine_feedback(routine):
@@ -708,6 +808,11 @@ def main():
 
 
 if __name__ == "__main__":
+    # Check for factory reset combo BEFORE starting main loop
+    if check_factory_reset_combo():
+        # Factory reset performed and rebooted - this code won't execute
+        pass
+
     try:
         main()
     except KeyboardInterrupt:
