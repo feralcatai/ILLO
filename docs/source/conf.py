@@ -13,7 +13,7 @@ sys.path.append(os.path.abspath(os.path.join('..', '..')))
 project = 'ILLO'
 copyright = '2025, Charles Doebler'
 author = 'Charles Doebler'
-release = '2.0.1'
+release = '2.0.3'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -56,7 +56,6 @@ html_theme_options = {
     'sticky_navigation': True,
     'includehidden': True,
     'titles_only': False,
-    'display_version': True,
     'prev_next_buttons_location': 'bottom',
     'style_external_links': True,
 }

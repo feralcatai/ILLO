@@ -1,6 +1,6 @@
 [project]
 name = "illo"
-version = "2.0.3"
+version = "3.0.0"
 description = "AI-Powered Levitating UFO Companion with Smart Environmental Sensing"
 authors = [
     {name = "Charles Doebler", email = "charles@feralcatai.com"}
@@ -68,7 +68,7 @@ documentation = "https://feralcatai.github.io/ILLO/"
 [tool.circuitpython]
 target_board = "circuitplayground_bluefruit"
 main_file = "code.py"
-firmware_version = "10.0.1"
+firmware_version = "10.2.1"
 required_libraries = [
     "adafruit_ble",
     "adafruit_bluefruit_connect",
@@ -83,7 +83,7 @@ required_libraries = [
 [hardware]
 board = "Adafruit Circuit Playground Bluefruit"
 processor = "ARM Cortex-M4 64MHz (nRF52840)"
-circuitpython_version = ">=9.0.4"
+circuitpython_version = ">=10.2.1"
 flash_memory = "2MB"
 ram_memory = "256KB"
 platform = "magnetic_levitation_ufo"
@@ -205,6 +205,7 @@ addopts = "-v --tb=short"
 
 # Version history - Production Release
 [changelog]
+"3.0.0" = "Version 3.0.0 kickoff: firmware updated to CircuitPython 10.2.1, docs/build removed from tracking, AGENTS.md added, version synced across all references"
 "2.0.3" = "Removed outdated michigan.json college file, updated documentation references"
 "2.0.2" = "Added automated deployment package builder and GitHub Actions for releases, improved serial monitor with dynamic port selection"
 "2.0.1" = "Initial production release - Complete AI companion with levitation integration, sustainable manufacturing"

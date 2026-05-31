@@ -7,9 +7,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ILLO is an AI-powered levitating UFO companion designed for the Circuit Playground Bluefruit (nRF52840). It's a production-ready CircuitPython application with four distinct operating modes: UFO Intelligence (AI learning), Intergalactic Cruising (ambient lighting), Meditate (breathing patterns), and Dance Party (multi-device BLE sync).
 
 **Target Hardware:** Adafruit Circuit Playground Bluefruit
-**Platform:** CircuitPython 9.0.4+
+**Platform:** CircuitPython 10.2.1+
 **Memory Constraints:** 256KB RAM (requires aggressive optimization)
-**Current Version:** 2.0.1
+**Current Version:** 3.0.0
 
 ## Development Commands
 
@@ -255,8 +255,8 @@ debug_interactions = False
 
 ### Version Management
 - Version is tracked in `project.toml` and `code.py`
-- Current: 2.0.1
-- Update both locations when releasing
+- Current: 2.0.3
+- Update both locations when releasing (and add a `CHANGELOG.md` entry)
 
 ## Common Development Patterns
 

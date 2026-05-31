@@ -189,7 +189,7 @@ Not just pre-programmed responses—ILLO actually learns:
 **Easy Setup in 3 Steps:**
 
 1. **Flash the Firmware** (5 minutes)
-    - Download CircuitPython 9.0.4 from CircuitPython.org
+    - Download CircuitPython 10.2.1 from CircuitPython.org
     - Drag & drop onto your Circuit Playground Bluefruit
 
 2. **Install ILLO** (2 minutes)

@@ -7,7 +7,7 @@
 ## 📋 What You Need
 
 - **Adafruit Circuit Playground Bluefruit** (nRF52840)
-- **CircuitPython 9.0.4** ([Download CPB UF2](https://circuitpython.org/board/circuitplayground_bluefruit/))
+- **CircuitPython 10.2.1** ([Download CPB UF2](https://circuitpython.org/board/circuitplayground_bluefruit/))
 - **USB-micro B cable** for programming
 - **USB-C cable** for power
 - **Computer** with file management capabilities
@@ -70,7 +70,7 @@
 ### 1. Prepare Your Circuit Playground
 
 1. Connect Circuit Playground Bluefruit to your computer via USB-micro B
-2. **Flash CircuitPython 9.0.4 with ulab**:
+2. **Flash CircuitPython 10.2.1 with ulab**:
     - Download the UF2 file from CircuitPython.org
     - Double-tap the reset button to enter bootloader mode
     - Drag the UF2 file to the CPLAYBOOT drive that appears

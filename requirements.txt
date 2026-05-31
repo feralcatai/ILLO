@@ -17,7 +17,7 @@ MarkupSafe==2.1.5
 # Note: CircuitPython runtime dependencies
 # These are bundled libraries from Adafruit CircuitPython Bundle
 # Download from: https://circuitpython.org/libraries
-# Recommended CircuitPython version: 10.0.3 (latest stable as of Nov 2025)
+# Recommended CircuitPython version: 10.2.1
 #
 # Required CircuitPython Libraries (from Bundle):
 # - adafruit_circuitplayground (hardware interface)
