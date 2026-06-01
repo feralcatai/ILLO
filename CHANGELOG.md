@@ -12,6 +12,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `AGENTS.md` — quick-orientation guide for AI coding agents
 - CircuitPython 10.2.1 firmware binary added to `firmware/`
+- **Kecksburg Festival Edition** — complete rewrite of `code.py` as a single-routine festival build
+  - Plays four UFO/sci-fi theme songs in rotation: Close Encounters, X-Files, Star Trek Fanfare, Also Sprach Zarathustra
+  - Mic-reactive brightness during both songs and inter-song pauses
+  - Shadow detection: sudden ambient light drop triggers a ripple animation
+  - Theremin trigger: sustained audio followed by silence immediately queues Close Encounters
+  - Rotating scan animation during inter-song pauses
+  - Serial memory reporting (`[MEM]`) after each song load and each playback cycle
+- `music/` directory with song JSON files (BPM + sixteenth-note encoding)
+  - `close_encounters.json` — five-note motif, plays 3× with 5s pauses
+  - `xfiles.json` — main riff with alternating E5/G5 on note 5, plays 4× (A B A B)
+  - `star_trek.json` — TOS fanfare, stacked fourths at BPM 60
+  - `also_sprach.json` — opening motif
 
 ### Changed
 - Updated target/tested CircuitPython firmware to 10.2.1 for the Circuit Playground Bluefruit

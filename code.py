@@ -49,6 +49,12 @@ SONG_FILES = [
 CLOSE_ENCOUNTERS_INDEX = 0
 
 PAUSE_BETWEEN_SONGS = 30.0  # seconds between songs
+CLOSE_ENCOUNTERS_REPEATS = 3  # how many times to play the motif back-to-back
+CLOSE_ENCOUNTERS_REPEAT_PAUSE = 5.0  # seconds between repetitions
+
+XFILES_INDEX = 1              # index of X-Files in SONG_FILES
+XFILES_REPEATS = 4            # plays: A B A B (note 5 alternates E5/G5)
+XFILES_REPEAT_PAUSE = 2.0     # seconds between repetitions
 
 # Mic sensitivity tuning — adjust these in the field
 MIC_AMBIENT_FLOOR = 50        # sound_level below this = silence
@@ -193,7 +199,7 @@ def mic_brightness():
     return normalized * 0.12
 
 
-def play_song(song, sound_enabled):
+def play_song(song, sound_enabled, notes_key="notes"):
     """Play a song with synchronized light show and mic reactivity.
 
     Note brightness pulses on primary color. Rests use secondary color.
@@ -202,8 +208,9 @@ def play_song(song, sound_enabled):
     Args:
         song (dict): Song data loaded from JSON.
         sound_enabled (bool): Whether to play audio.
+        notes_key (str): Which notes list to use ("notes", "notes_a", "notes_b").
     """
-    notes = song.get("notes", [])
+    notes = song.get(notes_key) or song.get("notes", [])
     bpm = song.get("bpm", 120)
     primary = tuple(song.get("colors", {}).get("primary", [0, 200, 100]))
     secondary = tuple(song.get("colors", {}).get("secondary", [0, 20, 40]))
@@ -353,6 +360,7 @@ def main():
             songs.append(song)
             print("[SYSTEM] Loaded: %s" % song.get("name", filepath))
         gc.collect()
+        print("[MEM] %d bytes free" % gc.mem_free())
 
     if not songs:
         print("[SYSTEM] No songs loaded - check music/ directory")
@@ -379,7 +387,26 @@ def main():
         song = songs[song_index]
         primary = tuple(song.get("colors", {}).get("primary", [0, 200, 100]))
 
-        play_song(song, sound_enabled)
+        # Songs with repeats play multiple times with short pauses between
+        if song_index == CLOSE_ENCOUNTERS_INDEX:
+            repeats = CLOSE_ENCOUNTERS_REPEATS
+            repeat_pause = CLOSE_ENCOUNTERS_REPEAT_PAUSE
+        elif song_index == XFILES_INDEX:
+            repeats = XFILES_REPEATS
+            repeat_pause = XFILES_REPEAT_PAUSE
+        else:
+            repeats = 1
+            repeat_pause = 0.0
+
+        for rep in range(repeats):
+            if song_index == XFILES_INDEX:
+                notes_key = "notes_a" if rep % 2 == 0 else "notes_b"
+            else:
+                notes_key = "notes"
+            play_song(song, sound_enabled, notes_key)
+            if rep < repeats - 1:
+                print("[MUSIC] Repeat %d/%d — pausing %ds" % (rep + 1, repeats, int(repeat_pause)))
+                pause_with_ambient(repeat_pause, primary, theremin_state, sound_enabled)
 
         next_index = (song_index + 1) % len(songs)
 
@@ -394,6 +421,7 @@ def main():
             song_index = next_index
 
         gc.collect()
+        print("[MEM] %d bytes free" % gc.mem_free())
 
 
 if __name__ == "__main__":
