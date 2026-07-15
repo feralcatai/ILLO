@@ -24,7 +24,8 @@ class ConfigManager:
                 'meditate_adaptive_timing': data.get('meditate_adaptive_timing', True),
                 'meditate_ultra_dim': data.get('meditate_ultra_dim', True),
                 'college_chant_detection_enabled': data.get(
-                    'college_chant_detection_enabled', False)
+                    'college_chant_detection_enabled', False),
+                'mp3_playback_enabled': data.get('mp3_playback_enabled', False)
             }
         except Exception as e:
             print("[CONFIG] ❌ Failed to load config: %s" % str(e))
@@ -39,7 +40,8 @@ class ConfigManager:
                 'ufo_persistent_memory': True,
                 'meditate_adaptive_timing': True,
                 'meditate_ultra_dim': True,
-                'college_chant_detection_enabled': False
+                'college_chant_detection_enabled': False,
+                'mp3_playback_enabled': False
             }
 
     @staticmethod
@@ -64,7 +66,8 @@ class ConfigManager:
                 'meditate_ultra_dim': config.get('meditate_ultra_dim', True),
                 'is_leader': config.get('is_leader', False),
                 'college_chant_detection_enabled': config.get(
-                    'college_chant_detection_enabled', False)
+                    'college_chant_detection_enabled', False),
+                'mp3_playback_enabled': config.get('mp3_playback_enabled', False)
             }
             with open('config.json', 'w') as config_file:
                 config_file.write('{\n')
@@ -82,8 +85,10 @@ class ConfigManager:
                     config_data['meditate_adaptive_timing']).lower())
                 config_file.write('  "meditate_ultra_dim": %s,\n' % str(
                     config_data['meditate_ultra_dim']).lower())
-                config_file.write('  "college_chant_detection_enabled": %s\n' % str(
+                config_file.write('  "college_chant_detection_enabled": %s,\n' % str(
                     config_data['college_chant_detection_enabled']).lower())
+                config_file.write('  "mp3_playback_enabled": %s\n' % str(
+                    config_data['mp3_playback_enabled']).lower())
                 config_file.write('}\n')
 
             print(

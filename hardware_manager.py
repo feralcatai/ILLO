@@ -55,6 +55,23 @@ class HardwareManager:
             cp.play_tone(freq, duration, 1)
 
     @staticmethod
+    def play_mp3_if_enabled(file_path, sound_enabled):
+        """Play an MP3 file through the onboard speaker if sound is enabled.
+
+        Uses cp.play_file(), which reuses the Circuit Playground library's
+        internal speaker-enable pin and audio output rather than claiming
+        board.SPEAKER a second time (which would raise a pin-in-use error).
+        """
+        if not sound_enabled or not file_path:
+            return False
+        try:
+            cp.play_file(file_path)
+            return True
+        except (OSError, MemoryError, RuntimeError) as e:
+            print("[Hardware] ❌ MP3 playback error: %s" % str(e))
+            return False
+
+    @staticmethod
     def map_deltas_to_pixels(deltas):
         """Map audio deltas to pixel positions."""
         pixel_data = [0] * 10

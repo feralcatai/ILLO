@@ -48,8 +48,10 @@ from chant_detector import ChantDetector
 
 
 class UFOCollegeSystem:
-    def __init__(self, college_spirit_enabled=True, college="penn_state"):
+    def __init__(self, college_spirit_enabled=True, college="penn_state",
+                 mp3_playback_enabled=False):
         self.college_spirit_enabled = college_spirit_enabled
+        self.mp3_playback_enabled = mp3_playback_enabled
         self.college_manager = CollegeManager(college)
         self.music_player = MusicPlayer()
 
@@ -104,10 +106,43 @@ class UFOCollegeSystem:
 
         return chant_played
 
+    def _try_play_mp3_chant(self, hardware, sound_enabled):
+        """Play the college's recorded chant MP3, if enabled and available."""
+        if not self.mp3_playback_enabled:
+            return False
+        mp3_file = self.college_manager.get_chant_mp3()
+        if not mp3_file:
+            return False
+        self._set_college_colors_static(hardware)
+        return hardware.play_mp3_if_enabled(mp3_file, sound_enabled)
+
+    def _try_play_mp3_fight_song(self, hardware, sound_enabled):
+        """Play the college's recorded fight song MP3, if enabled and available."""
+        if not self.mp3_playback_enabled:
+            return False
+        mp3_file = self.college_manager.get_fight_song_mp3()
+        if not mp3_file:
+            return False
+        self._set_college_colors_static(hardware)
+        return hardware.play_mp3_if_enabled(mp3_file, sound_enabled)
+
+    def _set_college_colors_static(self, hardware):
+        """Show a static college color fill, used while MP3 audio plays."""
+        try:
+            primary_color, _ = self.get_college_colors()
+            for i in range(10):
+                hardware.pixels[i] = primary_color
+            hardware.pixels.show()
+        except Exception as e:
+            print("[UFO AI] Static color error: %s" % str(e))
+
     def _play_chant_with_lights(self, hardware, sound_enabled):
         """Play chant with synchronized light pattern instead of blocking light show."""
         if not sound_enabled:
             return False
+
+        if self._try_play_mp3_chant(hardware, sound_enabled):
+            return True
 
         chant_notes = self.college_manager.get_chant_notes()
         if not chant_notes:
@@ -322,6 +357,9 @@ class UFOCollegeSystem:
         if not sound_enabled:
             return False
 
+        if self._try_play_mp3_chant(hardware, sound_enabled):
+            return True
+
         chant_notes = self.college_manager.get_chant_notes()
         if not chant_notes:
             return self._fallback_chant_tones(hardware, sound_enabled)
@@ -350,6 +388,9 @@ class UFOCollegeSystem:
         """Play college fight song using unified music player."""
         if not sound_enabled:
             return False
+
+        if self._try_play_mp3_fight_song(hardware, sound_enabled):
+            return True
 
         fight_song_notes = self.college_manager.get_fight_song_notes()
         if not fight_song_notes:
