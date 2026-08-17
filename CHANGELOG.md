@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [3.0.0] - 2026-05-31
+## [2.0.3] - 2026-08-17
 
 ### Added
 - `AGENTS.md` — quick-orientation guide for AI coding agents
@@ -27,10 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated target/tested CircuitPython firmware to 10.2.1 for the Circuit Playground Bluefruit
-- Synced version to 3.0.0 across `CLAUDE.md`, `project.toml`, and `CHANGELOG.md`
+- Synced version to 2.0.3 across `CLAUDE.md`, `AGENTS.md`, `project.toml`, and `CHANGELOG.md`
 - Removed `docs/build/` from git tracking (already gitignored)
 
-## [2.0.1] - 2025-01-27
+## [2.0.2] - 2025-01-27
 
 ### Added
 - Comprehensive module-level docstrings for API documentation
@@ -39,7 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Better structured API documentation index
 
 ### Changed
-- Updated all version strings to 2.0.1 for consistency
+- Updated all version strings to 2.0.2 for consistency
 - Enhanced documentation configuration in docs/source/conf.py
 - Improved docs/source/index.rst with complete project overview
 

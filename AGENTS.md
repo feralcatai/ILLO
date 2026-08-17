@@ -13,7 +13,7 @@ ILLO is a levitating UFO companion for the **Adafruit Circuit Playground
 Bluefruit (nRF52840)**, written in **CircuitPython**. It is a production
 embedded application, not a desktop Python app.
 
-**Current build: Kecksburg Festival Edition (v3.0.0)** — a single-routine
+**Current build: Kecksburg Festival Edition (v2.0.3)** — a single-routine
 song player that rotates four UFO/sci-fi theme songs with mic reactivity,
 shadow detection, and a theremin trigger for Close Encounters.
 

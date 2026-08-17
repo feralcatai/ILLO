@@ -6,12 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ILLO is a levitating UFO companion designed for the Circuit Playground Bluefruit (nRF52840), written in CircuitPython.
 
-**Current build: Kecksburg Festival Edition (v3.0.0)** — a single-routine song player that rotates four UFO/sci-fi theme songs with synchronized NeoPixel light shows, mic-reactive brightness, shadow detection, and a theremin trigger that immediately queues Close Encounters on sustained-then-silent audio.
+**Current build: Kecksburg Festival Edition (v2.0.3)** — a single-routine song player that rotates four UFO/sci-fi theme songs with synchronized NeoPixel light shows, mic-reactive brightness, shadow detection, and a theremin trigger that immediately queues Close Encounters on sustained-then-silent audio.
 
 **Target Hardware:** Adafruit Circuit Playground Bluefruit
 **Platform:** CircuitPython 10.2.1+
 **Memory Constraints:** 256KB RAM (~114KB free at runtime after loading all songs)
-**Current Version:** 3.0.0
+**Current Version:** 2.0.3
 
 ## Development Commands
 

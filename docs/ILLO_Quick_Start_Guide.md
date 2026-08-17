@@ -1,6 +1,6 @@
 # ILLO Quick Start Guide — Kecksburg Festival Edition
 
-**v3.0.0 | Single-routine festival build**
+**v2.0.3 | Single-routine festival build**
 
 ---
 
@@ -76,7 +76,7 @@ Pixel brightness lifts with ambient crowd volume during both songs and pause ani
 Connect via USB and open a serial terminal (115200 baud) to see status output:
 
 ```
-[SYSTEM] ILLO v3.0.0 - Kecksburg Festival Edition
+[SYSTEM] ILLO v2.0.3 - Kecksburg Festival Edition
 [SYSTEM] Loaded: Close Encounters
 [MEM] 114000 bytes free
 ...
