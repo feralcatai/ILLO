@@ -3,7 +3,8 @@
     "allow": [
       "Bash(sphinx-build:*)",
       "Bash(python -m sphinx:*)",
-      "Bash(python tools/create_deployment_package.py:*)"
+      "Bash(python tools/create_deployment_package.py:*)",
+      "Bash(make html *)"
     ],
     "deny": [],
     "ask": []

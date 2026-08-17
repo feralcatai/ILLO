@@ -1,0 +1,26 @@
+{
+    "name": "Also Sprach Zarathustra",
+    "description": "Opening sunrise fanfare from 2001: A Space Odyssey",
+    "bpm": 60,
+    "colors": {
+        "primary": [255, 140, 0],
+        "secondary": [255, 255, 200]
+    },
+    "notes": [
+        [130, 16],
+        [0, 4],
+        [195, 16],
+        [0, 4],
+        [261, 16],
+        [0, 4],
+        [261, 8],
+        [0, 2],
+        [261, 8],
+        [0, 2],
+        [261, 8],
+        [0, 2],
+        [277, 32],
+        [0, 4],
+        [261, 48]
+    ]
+}

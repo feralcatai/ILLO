@@ -4,12 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-ILLO is an AI-powered levitating UFO companion designed for the Circuit Playground Bluefruit (nRF52840). It's a production-ready CircuitPython application with four distinct operating modes: UFO Intelligence (AI learning), Intergalactic Cruising (ambient lighting), Meditate (breathing patterns), and Dance Party (multi-device BLE sync).
+ILLO is a levitating UFO companion designed for the Circuit Playground Bluefruit (nRF52840), written in CircuitPython.
+
+**Current build: Kecksburg Festival Edition (v3.0.0)** — a single-routine song player that rotates four UFO/sci-fi theme songs with synchronized NeoPixel light shows, mic-reactive brightness, shadow detection, and a theremin trigger that immediately queues Close Encounters on sustained-then-silent audio.
 
 **Target Hardware:** Adafruit Circuit Playground Bluefruit
-**Platform:** CircuitPython 9.0.4+
-**Memory Constraints:** 256KB RAM (requires aggressive optimization)
-**Current Version:** 2.0.1
+**Platform:** CircuitPython 10.2.1+
+**Memory Constraints:** 256KB RAM (~114KB free at runtime after loading all songs)
+**Current Version:** 3.0.0
 
 ## Development Commands
 
@@ -39,25 +41,24 @@ python -m http.server
 ```
 
 ### Configuration
-All runtime configuration is stored in `config.json` at the root. Edit this file to change:
-- Active routine (1-4)
-- Active mode (1-4)
-- College affiliation
-- Bluetooth settings
-- Persistent memory flags
+There is no `config.json` in the Kecksburg Festival Edition. All tuning constants are defined at the top of `code.py`:
+- Song repeat counts and inter-repeat pause durations
+- Mic sensitivity thresholds (`MIC_AMBIENT_FLOOR`, `MIC_THEREMIN_THRESHOLD`, etc.)
+- Light shadow detection threshold and baseline adaptation rate
+- Inter-song pause duration
 
 ## Architecture
 
-### Entry Point & System Initialization
+### Entry Point
 
-**`code.py`** is the main entry point (CircuitPython convention). It:
-1. Loads configuration from `config.json` via `ConfigManager`
-2. Initializes system managers (Memory, Interaction)
-3. Creates the appropriate routine instance via lazy imports
-4. Runs the main loop with scheduled tasks (TaskScheduler)
-5. Handles button interactions (A=routine switch, B=mode switch)
+**`code.py`** is the main entry point (CircuitPython convention). The Kecksburg Festival Edition is self-contained — no external routine modules. It:
+1. Loads all song JSON files from `music/` at startup
+2. Plays songs in rotation with NeoPixel light shows
+3. Monitors mic for theremin trigger and volume reactivity
+4. Monitors light sensor for shadow detection
+5. Reports free memory to serial after each song cycle
 
-**`boot.py`** remounts the filesystem as writable to enable persistent memory saves.
+**`boot.py`** remounts the filesystem as writable (unused by the festival build but kept for compatibility).
 
 ### Four Operating Modes (Routines)
 
@@ -179,7 +180,7 @@ If memory errors occur during development:
 
 ## College Integration System
 
-Colleges are defined as JSON files in `colleges/` directory (e.g., `penn_state.json`, `michigan.json`).
+Colleges are defined as JSON files in `colleges/` directory (e.g., `penn_state.json`).
 
 **Schema:**
 ```json
@@ -255,8 +256,8 @@ debug_interactions = False
 
 ### Version Management
 - Version is tracked in `project.toml` and `code.py`
-- Current: 2.0.1
-- Update both locations when releasing
+- Current: 2.0.3
+- Update both locations when releasing (and add a `CHANGELOG.md` entry)
 
 ## Common Development Patterns
 
@@ -282,63 +283,33 @@ debug_interactions = False
 
 ## Known Limitations
 
-1. **Memory is extremely tight** - 256KB RAM shared with CircuitPython runtime
+1. **Memory is tight** - 256KB RAM shared with CircuitPython runtime (~114KB free at runtime)
 2. **No multithreading** - CircuitPython is single-threaded, use non-blocking patterns
-3. **Bluetooth range** - BLE has ~10m range, affected by physical obstacles
-4. **Audio quality** - Piezo speaker is low-fidelity, FFT is resource-intensive
-5. **Battery life** - ~5 hours with adaptive brightness, less with audio processing
-6. **Filesystem writes** - Limited flash wear, minimize save frequency
+3. **Audio quality** - Piezo speaker is low-fidelity; `cp.play_tone()` is blocking
+4. **Battery life** - ~5 hours with sound enabled, longer with sound off
 
 ## Documentation Resources
 
 - **Quick Start:** `docs/ILLO_Quick_Start_Guide.md`
-- **Assembly Guide:** `docs/ILLO_Assembly_Guide.md` (hardware assembly instructions, in progress)
-- **Configuration:** `docs/ILLO_Device_Configuration_Guide.md`
-- **Bluetooth Control:** `docs/ILLO_Bluetooth_Control_Guide.md`
-- **API Docs:** `apidocs/` (Sphinx-generated)
-- **README:** Full feature overview and marketing content
+- **Assembly Guide:** `docs/ILLO_Assembly_Guide.md`
+- **Changelog:** `CHANGELOG.md`
 
 ## Project Structure Summary
 
 ```
-├── code.py                    # Main entry point
+├── code.py                    # Main entry point — entire festival build
 ├── boot.py                    # Filesystem remount
-├── config.json                # Runtime configuration
 │
-├── Routines (4 modes)
-│   ├── ufo_intelligence.py    # AI companion
-│   ├── intergalactic_cruising.py  # Ambient lighting
-│   ├── meditate.py            # Breathing patterns
-│   └── dance_party.py         # Multi-device sync
+├── music/                     # Song JSON files (BPM + sixteenth-note encoding)
+│   ├── close_encounters.json  # Five-note motif, plays 3×
+│   ├── xfiles.json            # Main riff, alternating E5/G5, plays 4×
+│   ├── star_trek.json         # TOS fanfare, stacked fourths
+│   └── also_sprach.json       # Opening motif
 │
-├── Core Managers
-│   ├── config_manager.py      # JSON config handling
-│   ├── memory_manager.py      # GC and monitoring
-│   ├── interaction_manager.py # Sensor input
-│   └── light_manager.py       # Adaptive brightness
-│
-├── UFO AI Subsystems
-│   ├── ufo_ai_core.py         # Decision engine
-│   ├── ufo_ai_behaviors.py    # Behavior patterns
-│   ├── ufo_learning.py        # Learning algorithms
-│   ├── ufo_memory_manager.py  # Persistent memory
-│   ├── ufo_college_system.py  # College integration
-│   └── chant_detector.py      # Audio pattern matching
-│
-├── Audio & BLE
-│   ├── audio_processor.py     # FFT and beat detection
-│   ├── music_player.py        # Fight song playback
-│   ├── bluetooth_controller.py # Bluefruit Connect
-│   └── sync_manager.py        # Multi-device BLE sync
-│
-├── Utilities
-│   ├── base_routine.py        # Routine base class
-│   ├── hardware_manager.py    # Hardware abstraction
-│   ├── color_utils.py         # Color functions
-│   └── college_manager.py     # College data loading
-│
-├── colleges/                  # College JSON definitions
+├── firmware/                  # CircuitPython 10.2.1 UF2
 ├── lib/                       # CircuitPython libraries
 ├── docs/                      # User documentation
 └── tools/                     # Development utilities
+    ├── circuitpy_sync.py      # Deploy to CIRCUITPY drive
+    └── serial_monitor.py      # Serial output monitor
 ```

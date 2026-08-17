@@ -1,31 +1,27 @@
-"""ILLO Main Controller - Multi-Routine UFO Lighting System.
+"""ILLO Kecksburg Festival Controller.
 
-This module serves as the main entry point for the ILLO project, managing routine
-selection, configuration, and system resources across four distinct modes:
+Single-routine UFO companion designed for the Kecksburg UFO Festival.
+Plays a rotating set of UFO/sci-fi theme songs with light shows,
+and reacts to ambient sound and light via onboard sensors.
 
-Routines:
-    1. UFO Intelligence - AI-driven personality with learning behaviors
-    2. Intergalactic Cruising - Smooth ambient lighting patterns
-    3. Meditate - Breathing pattern visualization for meditation
-    4. Dance Party - Synchronized multi-device light shows via BLE
+Mic reactivity:
+    - During pauses: pixel brightness tracks crowd volume
+    - During songs: base brightness lifts with volume
+    - Theremin trigger: sustained audio followed by silence queues
+      Close Encounters as the next song immediately
 
-Hardware Interface:
-    - Button A: Cycle through routines (saves and reboots for clean switch)
-    - Button B: Cycle through color/pattern modes (routine-specific)
-    - Switch: Volume/sound enable flag (True=on, False=off)
+Light reactivity:
+    - Shadow detection: sudden drop in ambient light triggers a ripple
+      animation (someone leaning over ILLO)
+    - Adaptive baseline normalizes to room lighting over time
+
+Pixel animations:
+    - During pauses: slow rotating scan around the ring with mic brightness
+
+Hardware:
+    - Adafruit Circuit Playground Bluefruit (nRF52840)
+    - Switch: Sound enable (True=on, False=off)
     - NeoPixels: 10-pixel ring for visual effects
-    - Sensors: Accelerometer (shake), microphone (audio), light sensor
-
-Architecture:
-    - TaskScheduler: Manages periodic operations (memory, config, status)
-    - ConfigManager: Persistent configuration storage
-    - MemoryManager: Tracks and optimizes memory usage
-    - InteractionManager: Unified sensor input handling
-
-Example:
-    >>> # Normal operation (called automatically)
-    >>> if __name__ == "__main__":
-    ...     main()
 
 Author:
     Charles Doebler at Feral Cat AI
@@ -44,684 +40,408 @@ Note:
     - Volume parameter is boolean sound enable, not actual volume control
 """
 
-# Charles Doebler at Feral Cat AI
-#
-# Button A cycles through routines (1-4)
-# Button B cycles through color modes (1-4)
-# Switch position controls volume (True/False)
-# NeoPixel ring represents UFO lighting effects
-# Microphone input creates reactive light patterns
-# Accelerometer shake detection for "turbulence" effects
-
 from adafruit_circuitplayground import cp
 import time
-from config_manager import ConfigManager
-from memory_manager import MemoryManager
-from interaction_manager import InteractionManager
-import microcontroller
-import os
+import json
+import gc
 
 # Version tracking
 VERSION = "2.0.3"
 
-# Debug Configuration - Set these flags to enable debug output
-debug_bluetooth = False
-debug_audio = False
-debug_memory = False
-debug_interactions = False
+# Songs to play in rotation (loaded from music/ directory)
+SONG_FILES = [
+    "music/close_encounters.json",
+    "music/xfiles.json",
+    "music/star_trek.json",
+    "music/also_sprach.json",
+]
+
+# Index of Close Encounters in SONG_FILES — queued on Theremin trigger
+CLOSE_ENCOUNTERS_INDEX = 0
+
+PAUSE_BETWEEN_SONGS = 30.0  # seconds between songs
+CLOSE_ENCOUNTERS_REPEATS = 3  # how many times to play the motif back-to-back
+CLOSE_ENCOUNTERS_REPEAT_PAUSE = 5.0  # seconds between repetitions
+
+XFILES_INDEX = 1              # index of X-Files in SONG_FILES
+XFILES_REPEATS = 4            # plays: A B A B (note 5 alternates E5/G5)
+XFILES_REPEAT_PAUSE = 2.0     # seconds between repetitions
+
+# Mic sensitivity tuning — adjust these in the field
+MIC_AMBIENT_FLOOR = 50        # sound_level below this = silence
+MIC_THEREMIN_THRESHOLD = 200  # sustained level that counts as Theremin playing
+MIC_THEREMIN_DURATION = 1.5   # seconds of sustained audio to arm the trigger
+MIC_SILENCE_DURATION = 0.8    # seconds of silence after audio to fire trigger
+
+# Light sensor tuning — adjust if shadow detection is too sensitive/slow
+LIGHT_SHADOW_THRESHOLD = 40   # drop in light level that counts as a shadow
+LIGHT_BASELINE_RATE = 0.02    # how quickly baseline adapts to room changes (2%/reading)
 
 
-class TaskScheduler:
-    """Simple task scheduler for managing periodic operations.
-
-    Optimizes performance by controlling when different operations run.
-    Tasks execute based on elapsed time intervals without blocking.
-
-    Features:
-        - Interval-based execution
-        - Enable/disable tasks dynamically
-        - Exception isolation (failed tasks don't crash the system)
-
-    Example:
-        ::
-
-        scheduler = TaskScheduler()
-        scheduler.add_task('cleanup', 30.0, gc.collect)
-        scheduler.run_due_tasks(time.monotonic())
-    """
-
-    def __init__(self):
-        """Initialize the task scheduler."""
-        self.tasks = {}
-        self.last_run = {}
-
-    def add_task(self, name, interval, callback, enabled=True):
-        """Add a scheduled task.
-
-        Args:
-            name (str): Task identifier
-            interval (float): Seconds between executions
-            callback (callable): Function to call
-            enabled (bool): Whether a task is initially enabled
-        """
-        self.tasks[name] = {
-            'interval': interval,
-            'callback': callback,
-            'enabled': enabled
-        }
-        self.last_run[name] = 0
-
-    def enable_task(self, name):
-        """Enable a scheduled task."""
-        if name in self.tasks:
-            self.tasks[name]['enabled'] = True
-
-    def disable_task(self, name):
-        """Disable a scheduled task."""
-        if name in self.tasks:
-            self.tasks[name]['enabled'] = False
-
-    def run_due_tasks(self, current_time):
-        """Run all tasks that are due to execute.
-
-        Args:
-            current_time (float): Current monotonic time
-
-        Returns:
-            list: Task names that were executed
-        """
-        executed_tasks = []
-
-        for name, task in self.tasks.items():
-            if not task['enabled']:
-                continue
-
-            if current_time - self.last_run[name] >= task['interval']:
-                try:
-                    task['callback']()
-                    self.last_run[name] = current_time
-                    executed_tasks.append(name)
-                except MemoryError as mem_err:
-                    print("[SCHEDULER] 🚨 Memory error in task %s: %s" % (name,
-                                                                         str(mem_err)))
-                    import gc
-                    gc.collect()
-                except Exception as e:
-                    print("[SCHEDULER] ❌ Task %s failed: %s" % (name, str(e)))
-
-        return executed_tasks
+# ---------------------------------------------------------------------------
+# Light sensor state — simple inline baseline tracker (no class needed)
+# ---------------------------------------------------------------------------
+_light_baseline = None        # initialized on first reading
+_light_last_check = 0.0       # monotonic time of last sample
+_light_history = [0] * 5      # circular buffer
+_light_history_idx = 0
 
 
-def _fs_writable_check():
-    """Check if the CIRCUITPY filesystem is writable.
+def check_shadow():
+    """Sample the light sensor and detect a sudden shadow.
+
+    Maintains an adaptive baseline that drifts toward room ambient over time.
+    Returns True once per shadow event (resets after detection).
 
     Returns:
-        bool: True if writable, False if USB is in read-only mode
-
-    Note:
-        Used to determine if persistent memory features can be enabled.
-        Returns False on OSError (filesystem is read-only).
+        bool: True if a shadow was just detected.
     """
-    test_path = "._writetest.tmp"
-    try:
-        with open(test_path, "wb") as f:
-            f.write(b"x")
-        os.remove(test_path)
-        return True
-    except OSError:
+    global _light_baseline, _light_last_check, _light_history, _light_history_idx
+
+    now = time.monotonic()
+    if now - _light_last_check < 0.1:
+        return False
+    _light_last_check = now
+
+    level = cp.light
+
+    # Initialize baseline on first call
+    if _light_baseline is None:
+        _light_baseline = level
         return False
 
+    # Store in circular buffer
+    _light_history[_light_history_idx] = level
+    _light_history_idx = (_light_history_idx + 1) % 5
 
-def show_routine_feedback(routine):
-    """Display visual feedback for routine selection.
+    # Detect shadow: current level well below baseline
+    drop = _light_baseline - level
+    detected = drop > LIGHT_SHADOW_THRESHOLD
 
-    Args:
-        routine (int): Routine number (1-4)
+    # Adapt baseline slowly when no interaction
+    if not detected:
+        _light_baseline += (level - _light_baseline) * LIGHT_BASELINE_RATE
 
-    Visual Pattern:
-        Lights up N pixels for routine N with routine-specific color.
-    """
-    cp.pixels.fill((0, 0, 0))
-
-    routine_info = {
-        1: {"color": (100, 0, 255), "name": "UFO Intelligence"},
-        2: {"color": (0, 255, 100), "name": "Intergalactic Cruising"},
-        3: {"color": (0, 100, 255), "name": "Meditate"},
-        4: {"color": (255, 100, 0), "name": "Dance Party"}
-    }
-
-    info = routine_info.get(routine, {"color": (255, 255, 255), "name": "Unknown"})
-
-    for i in range(routine):
-        cp.pixels[i] = info["color"]
-
-    cp.pixels.show()
-    print("🚀 Routine %d: %s" % (routine, info["name"]))
+    return detected
 
 
-def show_mode_feedback(mode):
-    """Display visual feedback for mode selection.
+def ripple_animation(color, sound_enabled):
+    """Run a pixel ripple outward from pixel 0, twice around the ring.
+
+    Used as the shadow-detection response. Plays a soft ascending tone
+    if sound is enabled.
 
     Args:
-        mode (int): Mode number (1-4)
-
-    Visual Pattern:
-        Uses quadrant positions (0, 3, 6, 9) with mode-specific colors.
+        color (tuple): RGB base color for the ripple.
+        sound_enabled (bool): Whether to play audio.
     """
-    cp.pixels.fill((0, 0, 0))
+    print("[LIGHT] Shadow detected — ripple!")
 
-    mode_info = {
-        1: {"color": (255, 0, 0), "name": "Rainbow Wheel"},
-        2: {"color": (255, 0, 255), "name": "Pink Theme"},
-        3: {"color": (0, 0, 255), "name": "Blue Theme"},
-        4: {"color": (0, 255, 0), "name": "Green Theme"}
-    }
-
-    info = mode_info.get(mode, {"color": (255, 255, 255), "name": "Unknown"})
-
-    positions = [0, 3, 6, 9]
-    for i in range(mode):
-        if i < len(positions):
-            cp.pixels[positions[i]] = info["color"]
-
-    cp.pixels.show()
-    print("🎨 Mode %d: %s" % (mode, info["name"]))
-
-
-def show_breathing_pattern_feedback(pattern):
-    """Display visual feedback for breathing pattern selection.
-
-    Args:
-        pattern (int): Breathing pattern number (1-4)
-
-    Visual Pattern:
-        Expanding rings from the center, pattern N uses N rings.
-        Includes smooth fade-out animation.
-    """
-    cp.pixels.fill((0, 0, 0))
-
-    pattern_info = {
-        1: {"color": (0, 150, 255), "name": "4-7-8 Breathing"},
-        2: {"color": (100, 200, 100), "name": "Box Breathing"},
-        3: {"color": (200, 100, 200), "name": "Triangle Breathing"},
-        4: {"color": (255, 150, 0), "name": "Deep Relaxation"}
-    }
-
-    info = pattern_info.get(pattern, {"color": (255, 255, 255), "name": "Unknown"})
-
-    # Center pixels (always lit)
-    center_pixels = [4, 5]
-    for pos in center_pixels:
-        cp.pixels[pos] = info["color"]
-
-    # Ring 1 (pattern 2+)
-    if pattern >= 2:
-        ring1_pixels = [3, 6]
-        for pos in ring1_pixels:
-            cp.pixels[pos] = tuple(int(c * 0.6) for c in info["color"])
-
-    # Ring 2 (pattern 3+)
-    if pattern >= 3:
-        ring2_pixels = [2, 7]
-        for pos in ring2_pixels:
-            cp.pixels[pos] = tuple(int(c * 0.4) for c in info["color"])
-
-    # Ring 3 (pattern 4 only - full ring)
-    if pattern == 4:
-        ring3_pixels = [1, 8, 0, 9]
-        for pos in ring3_pixels:
-            cp.pixels[pos] = tuple(int(c * 0.2) for c in info["color"])
-
-    cp.pixels.show()
-    print("🧘 Pattern %d: %s" % (pattern, info["name"]))
-    time.sleep(1.2)
-
-    # Smooth fade out
-    for fade_step in range(10):
+    # Two passes around the ring
+    for _ in range(2):
         for i in range(10):
-            current_color = cp.pixels[i]
-            if current_color != (0, 0, 0):
-                faded_color = tuple(int(c * 0.8) for c in current_color)
-                cp.pixels[i] = faded_color
-        cp.pixels.show()
-        time.sleep(0.1)
+            cp.pixels.fill((0, 0, 0))
+            # Bright leading pixel
+            cp.pixels[i] = color
+            # Dim trailing pixel
+            cp.pixels[(i - 1) % 10] = tuple(max(0, int(c * 0.3)) for c in color)
+            cp.pixels.show()
+            if sound_enabled and _ == 0:
+                # Soft ascending chirp on first pass only
+                freq = 400 + i * 40
+                cp.play_tone(freq, 0.04)
+            else:
+                time.sleep(0.05)
 
     cp.pixels.fill((0, 0, 0))
     cp.pixels.show()
 
 
-def create_routine_instance(routine, config, bt_debug, audio_debug):
-    """Create a routine instance based on a routine number.
-
-    Uses lazy imports to save memory by only loading the necessary routines.
+def load_song(filepath):
+    """Load a song JSON file from the filesystem.
 
     Args:
-        routine (int): Routine number (1-4)
-        config (dict): Configuration dictionary
-        bt_debug (bool): Bluetooth debug flag
-        audio_debug (bool): Audio debug flag
+        filepath (str): Path to the song JSON file.
 
     Returns:
-        object or None: Routine instance if successful, None on failure
-
-    Note:
-        - Memory errors trigger immediate cleanup
-        - UFO Intelligence validates AI subsystems after init
-        - Returns None for invalid routine numbers
+        dict or None: Song data, or None on failure.
     """
-    if not 1 <= routine <= 4:
-        print("[SYSTEM] ❌ Invalid routine number: %d (must be 1-4)" % routine)
-        return None
-
-    instance = None
-
-    # Extract config values
-    name = config.get('name', 'ILLO')
-    bluetooth_enabled = config.get('bluetooth_enabled', True)
-    college_spirit_enabled = config.get('college_spirit_enabled', False)
-    college = config.get('college', 'none')
-    ufo_persistent_memory = config.get('ufo_persistent_memory', False)
-    meditate_adaptive_timing = config.get('meditate_adaptive_timing', True)
-    meditate_ultra_dim = config.get('meditate_ultra_dim', True)
-
-    # Check filesystem for UFO Intelligence only
-    _fs_is_writable = _fs_writable_check() if routine == 1 else False
-    _persist_this_run = bool(ufo_persistent_memory and _fs_is_writable)
-
     try:
-        if routine == 1:
-            print("[SYSTEM] 🛸 Loading UFO Intelligence...")
-            from ufo_intelligence import UFOIntelligence
-
-            try:
-                instance = UFOIntelligence(
-                    device_name=name,
-                    debug_bluetooth=bt_debug,
-                    debug_audio=audio_debug,
-                    persistent_memory=_persist_this_run,
-                    college_spirit_enabled=college_spirit_enabled,
-                    college=college
-                )
-            except MemoryError:
-                print("[SYSTEM] 🚨 OUT OF MEMORY initializing UFO Intelligence")
-                print(
-                    "[SYSTEM] 💡 Try: 1) Restart, 2) Disable persistent memory, 3) Use simpler routine")
-                return None
-
-            # Validate AI subsystems
-            if hasattr(instance, 'ai_core') and hasattr(instance,
-                                                        'behaviors') and hasattr(
-                instance, 'learning'):
-                if instance.ai_core is None or instance.behaviors is None or instance.learning is None:
-                    print("[SYSTEM] ❌ UFO Intelligence failed to initialize AI systems")
-                    if hasattr(instance, 'cleanup'):
-                        instance.cleanup()
-                    return None
-
-        elif routine == 2:
-            print("[SYSTEM] 🌌 Loading Intergalactic Cruising...")
-            from intergalactic_cruising import IntergalacticCruising
-            instance = IntergalacticCruising()
-
-            if bluetooth_enabled and hasattr(instance,
-                                             'bluetooth') and instance.bluetooth:
-                print("[SYSTEM] 📱 Enabling Bluetooth control...")
-                instance.enable_bluetooth()
-            else:
-                print("[SYSTEM] ⚡ High-performance mode (Bluetooth disabled)")
-
-        elif routine == 3:
-            print("[SYSTEM] 🧘 Loading Meditate...")
-            from meditate import Meditate
-            instance = Meditate(
-                adaptive_timing=meditate_adaptive_timing,
-                ultra_dim=meditate_ultra_dim
-            )
-
-        elif routine == 4:
-            print("[SYSTEM] 💃 Loading Dance Party...")
-            from dance_party import DanceParty
-            instance = DanceParty(name, bt_debug, audio_debug)
-
-            if bluetooth_enabled and hasattr(instance, 'enable_bluetooth'):
-                success = instance.enable_bluetooth()
-                if not success and bt_debug:
-                    print("[SYSTEM] ⚠️ Dance Party Bluetooth init issue")
-
-            if bt_debug:
-                print(
-                    "[SYSTEM] 📡 Role determined by Button B (Mode 1=Leader, 2-4=Follower)")
-
-        if instance:
-            print("[SYSTEM] ✅ Routine %d loaded successfully" % routine)
-
-        return instance
-
-    except ImportError as import_err:
-        print("[SYSTEM] ❌ Import error: %s" % str(import_err))
-        print("[SYSTEM] 💡 Check that all required files are on CIRCUITPY")
-        if instance and hasattr(instance, 'cleanup'):
-            instance.cleanup()
-        return None
-
-    except MemoryError as mem_err:
-        print("[SYSTEM] ❌ Memory error: %s" % str(mem_err))
-        print("[SYSTEM] 💡 Try restarting or using a simpler routine")
-        if instance and hasattr(instance, 'cleanup'):
-            instance.cleanup()
-        import gc
-        gc.collect()
-        return None
-
+        with open(filepath, "r") as f:
+            return json.load(f)
     except Exception as e:
-        print("[SYSTEM] ❌ Unexpected error: %s" % str(e))
-        if instance and hasattr(instance, 'cleanup'):
-            instance.cleanup()
+        print("[MUSIC] Failed to load %s: %s" % (filepath, str(e)))
         return None
 
 
-def handle_button_interactions(routine, mode, last_button_a_time, last_button_b_time,
-                               button_debounce_delay, current_time):
-    """Handle button A and B interactions with debouncing.
-
-    Button A cycles routines and reboots. Button B cycles modes.
+def set_pixels(color, brightness=0.1):
+    """Fill all NeoPixels with a color scaled by brightness.
 
     Args:
-        routine (int): Current routine (1-4)
-        mode (int): Current mode (1-4)
-        last_button_a_time (float): Last Button A press timestamp
-        last_button_b_time (float): Last Button B press timestamp
-        button_debounce_delay (float): Debounce delay in seconds
-        current_time (float): Current monotonic time
+        color (tuple): RGB tuple.
+        brightness (float): 0.0 to 1.0 scale factor.
+    """
+    r = int(color[0] * brightness)
+    g = int(color[1] * brightness)
+    b = int(color[2] * brightness)
+    cp.pixels.fill((r, g, b))
+    cp.pixels.show()
+
+
+def pixels_off():
+    """Turn off all NeoPixels."""
+    cp.pixels.fill((0, 0, 0))
+    cp.pixels.show()
+
+
+def mic_brightness():
+    """Sample the microphone and return a brightness boost.
+
+    Maps cp.sound_level to a 0.0–0.12 brightness addition
+    so louder sounds make the pixels glow brighter.
 
     Returns:
-        tuple: (new_routine, new_mode, new_last_button_a_time,
-                new_last_button_b_time, config_changed)
+        float: Brightness boost value.
     """
-    config_changed = False
-
-    # Button A: Routine selection (with reboot)
-    if cp.button_a and (current_time - last_button_a_time > button_debounce_delay):
-        routine = (routine % 4) + 1
-        show_routine_feedback(routine)
-        print("🔄 Switching to routine %d - saving and rebooting..." % routine)
-
-        try:
-            config_mgr = ConfigManager()
-            config = config_mgr.load_config()
-            config['routine'] = routine
-            success = config_mgr.save_config(config)
-
-            if success:
-                print("💾 Routine %d saved successfully" % routine)
-                time.sleep(1.5)
-                cp.pixels.fill((0, 0, 0))
-                cp.pixels.show()
-                print("🚀 Rebooting...")
-                time.sleep(0.5)
-
-                if microcontroller:
-                    microcontroller.reset()
-                else:
-                    print("❌ Cannot reboot (microcontroller module unavailable)")
-                    config_changed = True
-            else:
-                print("❌ Failed to save, continuing without reboot")
-                config_changed = True
-
-        except Exception as e:
-            print("❌ Error during save: %s" % str(e))
-            config_changed = True
-
-        last_button_a_time = current_time
-        time.sleep(0.8)
-        cp.pixels.fill((0, 0, 0))
-        cp.pixels.show()
-
-    # Button B: Mode selection
-    if cp.button_b and (current_time - last_button_b_time > button_debounce_delay):
-        mode = (mode % 4) + 1
-        show_mode_feedback(mode)
-        config_changed = True
-
-        # Special feedback for Meditate
-        if routine == 3:
-            show_breathing_pattern_feedback(mode)
-            breathing_patterns = {
-                1: "4-7-8 Breathing",
-                2: "Box Breathing",
-                3: "Triangle Breathing",
-                4: "Deep Relaxation"
-            }
-            print("[MEDITATE] 🧘 Mode %d = %s" % (mode, breathing_patterns.get(mode,
-                                                                              "Unknown")))
-
-        time.sleep(0.8)
-        cp.pixels.fill((0, 0, 0))
-        cp.pixels.show()
-        last_button_b_time = current_time
-
-    return routine, mode, last_button_a_time, last_button_b_time, config_changed
+    level = cp.sound_level
+    if level < MIC_AMBIENT_FLOOR:
+        return 0.0
+    normalized = min(1.0, (level - MIC_AMBIENT_FLOOR) / (500 - MIC_AMBIENT_FLOOR))
+    return normalized * 0.12
 
 
-def handle_ufo_intelligence_learning(routine, current_routine_instance, interactions):
-    """Handle UFO Intelligence learning from interactions.
+def play_song(song, sound_enabled, notes_key="notes"):
+    """Play a song with synchronized light show and mic reactivity.
 
-    Only active for routine 1 (UFO Intelligence).
+    Note brightness pulses on primary color. Rests use secondary color.
+    Overall brightness lifts with ambient mic level.
 
     Args:
-        routine (int): Current routine number
-        current_routine_instance (object): Active routine instance
-        interactions (dict): Detected interactions from InteractionManager
+        song (dict): Song data loaded from JSON.
+        sound_enabled (bool): Whether to play audio.
+        notes_key (str): Which notes list to use ("notes", "notes_a", "notes_b").
     """
-    if routine != 1 or not current_routine_instance:
+    notes = song.get(notes_key) or song.get("notes", [])
+    bpm = song.get("bpm", 120)
+    primary = tuple(song.get("colors", {}).get("primary", [0, 200, 100]))
+    secondary = tuple(song.get("colors", {}).get("secondary", [0, 20, 40]))
+
+    if not notes:
         return
 
-    # Update last interaction time
-    if interactions['tap'] or interactions['shake']:
-        if hasattr(current_routine_instance, 'last_interaction'):
-            current_routine_instance.last_interaction = time.monotonic()
-        if (hasattr(current_routine_instance, 'record_successful_attention') and
-                getattr(current_routine_instance, 'mood', None) == "curious"):
-            current_routine_instance.record_successful_attention()
+    sixteenth = 30.0 / (bpm * 4)
 
-    # Shake boosts energy
-    if interactions['shake']:
-        if hasattr(current_routine_instance, 'energy_level'):
-            old_energy = current_routine_instance.energy_level
-            current_routine_instance.energy_level = min(100,
-                                                        current_routine_instance.energy_level + 15)
-            if debug_interactions:
-                print("[UFO AI] ⚡ Energy: %d -> %d" % (old_energy,
-                                                       current_routine_instance.energy_level))
+    print("[MUSIC] Playing: %s at %d BPM" % (song.get("name", "?"), bpm))
+    set_pixels(primary, 0.08)
 
-    # Light interactions
-    if interactions.get('light_interaction', False):
-        print("[UFO AI] 💡 Light interaction detected!")
-        if hasattr(current_routine_instance, 'last_interaction'):
-            current_routine_instance.last_interaction = time.monotonic()
+    for note_data in notes:
+        if not isinstance(note_data, list) or len(note_data) != 2:
+            continue
+
+        freq = int(note_data[0])
+        duration_sixteenths = int(note_data[1])
+        duration_seconds = duration_sixteenths * sixteenth
+
+        boost = mic_brightness()
+
+        if freq > 0:
+            set_pixels(primary, 0.15 + boost)
+            if sound_enabled:
+                cp.play_tone(freq, duration_seconds)
+            else:
+                time.sleep(duration_seconds)
+        else:
+            set_pixels(secondary, 0.05 + boost)
+            time.sleep(duration_seconds)
+
+        # Short gap between notes
+        time.sleep(sixteenth / 2)
+
+    set_pixels(primary, 0.05)
+
+
+def pause_with_ambient(seconds, color, theremin_state, sound_enabled):
+    """Wait between songs with rotating scan animation and mic reactivity.
+
+    A single brighter pixel sweeps around the ring while all others hold
+    a dim base glow. Brightness tracks mic volume. Also monitors for
+    shadow detection and the Theremin trigger pattern.
+
+    Args:
+        seconds (float): How long to pause.
+        color (tuple): RGB base color.
+        theremin_state (dict): Mutable Theremin trigger state.
+        sound_enabled (bool): Whether to play audio (for ripple chirp).
+
+    Returns:
+        bool: True if Theremin trigger fired (play Close Encounters next).
+    """
+    end_time = time.monotonic() + seconds
+    scan_pixel = 0
+    scan_step_interval = 0.12   # seconds per pixel step — controls scan speed
+    last_scan_step = time.monotonic()
+
+    # Dim base color for ring fill
+    base_r = max(1, int(color[0] * 0.03))
+    base_g = max(1, int(color[1] * 0.03))
+    base_b = max(1, int(color[2] * 0.03))
+    base_color = (base_r, base_g, base_b)
+
+    while time.monotonic() < end_time:
+        now = time.monotonic()
+        level = cp.sound_level
+        boost = mic_brightness()
+
+        # --- Shadow detection ---
+        if check_shadow():
+            ripple_animation(color, sound_enabled)
+            # Reset scan position after ripple
+            scan_pixel = 0
+            last_scan_step = time.monotonic()
+
+        # --- Rotating scan animation ---
+        if now - last_scan_step >= scan_step_interval:
+            scan_pixel = (scan_pixel + 1) % 10
+            last_scan_step = now
+
+            # Fill ring with dim base, boost with mic volume
+            bright_base = (
+                min(255, int(base_r + color[0] * boost)),
+                min(255, int(base_g + color[1] * boost)),
+                min(255, int(base_b + color[2] * boost)),
+            )
+            cp.pixels.fill(bright_base)
+
+            # Bright leading pixel
+            lead_brightness = 0.25 + boost
+            cp.pixels[scan_pixel] = (
+                min(255, int(color[0] * lead_brightness)),
+                min(255, int(color[1] * lead_brightness)),
+                min(255, int(color[2] * lead_brightness)),
+            )
+            # Medium trailing pixel
+            trail = (scan_pixel - 1) % 10
+            cp.pixels[trail] = (
+                min(255, int(color[0] * (lead_brightness * 0.4))),
+                min(255, int(color[1] * (lead_brightness * 0.4))),
+                min(255, int(color[2] * (lead_brightness * 0.4))),
+            )
+            cp.pixels.show()
+
+        # --- Theremin trigger state machine ---
+        if level >= MIC_THEREMIN_THRESHOLD:
+            if not theremin_state["armed"]:
+                if theremin_state["armed_at"] == 0.0:
+                    theremin_state["armed_at"] = now
+                    print("[MIC] Sustained audio detected — arming trigger")
+                elif now - theremin_state["armed_at"] >= MIC_THEREMIN_DURATION:
+                    theremin_state["armed"] = True
+                    print("[MIC] Trigger armed — waiting for silence")
+            theremin_state["silence_start"] = 0.0
+
+        elif level < MIC_AMBIENT_FLOOR:
+            if theremin_state["armed"]:
+                if theremin_state["silence_start"] == 0.0:
+                    theremin_state["silence_start"] = now
+                elif now - theremin_state["silence_start"] >= MIC_SILENCE_DURATION:
+                    print("[MIC] Theremin trigger fired — queuing Close Encounters")
+                    theremin_state["armed"] = False
+                    theremin_state["armed_at"] = 0.0
+                    theremin_state["silence_start"] = 0.0
+                    return True
+            else:
+                theremin_state["armed_at"] = 0.0
+                theremin_state["silence_start"] = 0.0
+
+        time.sleep(0.05)
+
+    return False
 
 
 def main():
-    """Main application loop with task scheduling.
+    """Main loop: load songs and play through them in rotation."""
+    print("[SYSTEM] ILLO v%s - Kecksburg Festival Edition" % VERSION)
+    print("[SYSTEM] Loading songs...")
 
-    Initializes system managers, loads configuration, and enters a main event loop.
-    Handles routine switching, mode changes, and periodic maintenance tasks.
-    """
-    print("[SYSTEM] 🚀 ILLO v%s - Starting..." % VERSION)
+    # Load all songs once at startup
+    songs = []
+    for filepath in SONG_FILES:
+        song = load_song(filepath)
+        if song:
+            songs.append(song)
+            print("[SYSTEM] Loaded: %s" % song.get("name", filepath))
+        gc.collect()
+        print("[MEM] %d bytes free" % gc.mem_free())
 
-    # Initialize managers
-    config_mgr = ConfigManager()
-    config = config_mgr.load_config()
-    memory_mgr = MemoryManager(enable_debug=debug_memory)
-    interaction_mgr = InteractionManager(enable_debug=debug_interactions)
-    scheduler = TaskScheduler()
+    if not songs:
+        print("[SYSTEM] No songs loaded - check music/ directory")
+        cp.pixels.fill((255, 0, 0))
+        cp.pixels.show()
+        return
 
-    # Load configuration
-    routine = config.get('routine', 1)
-    mode = config.get('mode', 1)
-    ufo_persistent_memory = config.get('ufo_persistent_memory', False)
+    print("[SYSTEM] %d songs ready. Starting playback." % len(songs))
+    print("[SYSTEM] Mic thresholds: theremin=%d, silence=%d" % (
+        MIC_THEREMIN_THRESHOLD, MIC_AMBIENT_FLOOR))
+    print("[SYSTEM] Shadow threshold: %d light units" % LIGHT_SHADOW_THRESHOLD)
 
-    # Check filesystem
-    fs_is_writable = _fs_writable_check()
-    persist_this_run = bool(ufo_persistent_memory and fs_is_writable)
+    song_index = 0
 
-    # State tracking
-    current_routine_instance = None
-    active_routine_number = 0
-    last_button_a_time = 0.0
-    last_button_b_time = 0.0
-    button_debounce_delay = 0.3
-    config_changed = False
+    # Theremin trigger state — persists across pause calls
+    theremin_state = {
+        "armed": False,
+        "armed_at": 0.0,
+        "silence_start": 0.0,
+    }
 
-    # Define scheduled tasks
-    def memory_cleanup_task():
-        """Periodic memory cleanup."""
-        memory_mgr.periodic_cleanup()
-
-    def config_save_task():
-        """Save config if changes pending."""
-        nonlocal config_changed, config, routine, mode
-        if config_changed:
-            config['routine'] = routine
-            config['mode'] = mode
-            success = config_mgr.save_config(config)
-            if success:
-                config_changed = False
-                if debug_memory:
-                    print("[SCHEDULER] 💾 Config auto-saved")
-
-    def system_status_task():
-        """Report system status."""
-        import gc
-        print("[SCHEDULER] 📊 Memory: %d bytes, Routine: %d, Mode: %d" %
-              (gc.mem_free(), routine, mode))
-
-    # Add tasks to a scheduler
-    scheduler.add_task('memory_cleanup', 30.0, memory_cleanup_task)
-    scheduler.add_task('config_save', 3.0, config_save_task)
-    scheduler.add_task('system_status', 60.0, system_status_task, enabled=debug_memory)
-
-    # Startup info
-    actual_volume = cp.switch
-    print("[SYSTEM] ✅ System initialized")
-    print("[SYSTEM] 📊 Routine: %d, Mode: %d, Sound: %s" %
-          (routine, mode, "ON" if actual_volume else "OFF"))
-
-    if ufo_persistent_memory and not fs_is_writable:
-        print("[SYSTEM] 💾 Persistent memory DISABLED (USB mounted)")
-    elif persist_this_run:
-        print("[SYSTEM] 💾 Persistent memory ENABLED")
-    else:
-        print("[SYSTEM] 💾 Persistent memory DISABLED")
-
-    cp.detect_taps = 1
-
-    # Performance tracking (debug only)
-    loop_start_time = time.monotonic()
-    loop_count = 0
-    performance_report_interval = 100
-
-    print("[SYSTEM] 🎮 Entering main loop...")
-
-    # Main event loop
     while True:
-        current_time = time.monotonic()
-        volume = cp.switch
-        loop_count += 1
+        sound_enabled = cp.switch
+        song = songs[song_index]
+        primary = tuple(song.get("colors", {}).get("primary", [0, 200, 100]))
 
-        # Routine switching
-        if routine != active_routine_number:
-            print("[SYSTEM] 🔄 Switching routines...")
+        # Songs with repeats play multiple times with short pauses between
+        if song_index == CLOSE_ENCOUNTERS_INDEX:
+            repeats = CLOSE_ENCOUNTERS_REPEATS
+            repeat_pause = CLOSE_ENCOUNTERS_REPEAT_PAUSE
+        elif song_index == XFILES_INDEX:
+            repeats = XFILES_REPEATS
+            repeat_pause = XFILES_REPEAT_PAUSE
+        else:
+            repeats = 1
+            repeat_pause = 0.0
 
-            # Clean up old routine
-            if current_routine_instance:
-                if hasattr(current_routine_instance, 'cleanup'):
-                    try:
-                        current_routine_instance.cleanup()
-                    except Exception as cleanup_err:
-                        print("[SYSTEM] ⚠️ Cleanup error: %s" % str(cleanup_err))
-
-                memory_mgr.cleanup_before_routine_change()
-                del current_routine_instance
-
-                import gc
-                gc.collect()
-                print("[SYSTEM] 💾 Memory freed: %d bytes available" % gc.mem_free())
-
-            # Set up a new routine
-            interaction_mgr.setup_for_routine(routine)
-            current_routine_instance = create_routine_instance(
-                routine, config, debug_bluetooth, debug_audio
-            )
-
-            if current_routine_instance:
-                active_routine_number = routine
-
-                # Adjust memory cleanup interval
-                if routine == 1:
-                    scheduler.tasks['memory_cleanup']['interval'] = 20.0
-                else:
-                    scheduler.tasks['memory_cleanup']['interval'] = 30.0
+        for rep in range(repeats):
+            if song_index == XFILES_INDEX:
+                notes_key = "notes_a" if rep % 2 == 0 else "notes_b"
             else:
-                print("[SYSTEM] ❌ Failed to load routine %d" % routine)
+                notes_key = "notes"
+            play_song(song, sound_enabled, notes_key)
+            if rep < repeats - 1:
+                print("[MUSIC] Repeat %d/%d — pausing %ds" % (rep + 1, repeats, int(repeat_pause)))
+                pause_with_ambient(repeat_pause, primary, theremin_state, sound_enabled)
 
-        # Check interactions
-        interactions = interaction_mgr.check_interactions(routine, volume, cp.pixels)
-        handle_ufo_intelligence_learning(routine, current_routine_instance,
-                                         interactions)
+        next_index = (song_index + 1) % len(songs)
 
-        # Handle buttons
-        routine, mode, last_button_a_time, last_button_b_time, config_changed_by_button = \
-            handle_button_interactions(
-                routine, mode, last_button_a_time, last_button_b_time,
-                button_debounce_delay, current_time
-            )
+        # Pause — rotating scan, shadow detection, Theremin trigger
+        triggered = pause_with_ambient(
+            PAUSE_BETWEEN_SONGS, primary, theremin_state, sound_enabled
+        )
 
-        if config_changed_by_button:
-            config['routine'] = routine
-            config['mode'] = mode
-            config_changed = True
+        if triggered:
+            song_index = CLOSE_ENCOUNTERS_INDEX
+        else:
+            song_index = next_index
 
-        # Run active routine
-        if current_routine_instance:
-            try:
-                current_routine_instance.run(mode, volume)
-            except MemoryError as mem_err:
-                print("[SYSTEM] 🚨 Memory error during routine: %s" % str(mem_err))
-                import gc
-                gc.collect()
-                print("[SYSTEM] 💾 Emergency cleanup: %d bytes free" % gc.mem_free())
-            except Exception as routine_err:
-                print("[SYSTEM] ❌ Routine error: %s" % str(routine_err))
-
-        # Run scheduled tasks
-        scheduler.run_due_tasks(current_time)
-
-        # Performance monitoring (debug)
-        if debug_memory and loop_count % performance_report_interval == 0:
-            elapsed = current_time - loop_start_time
-            if elapsed > 0:
-                loops_per_second = performance_report_interval / elapsed
-                print("[SCHEDULER] 🚀 Performance: %.1f loops/sec" % loops_per_second)
-            loop_start_time = current_time
+        gc.collect()
+        print("[MEM] %d bytes free" % gc.mem_free())
 
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\n[SYSTEM] ⏹️ Keyboard interrupt")
-        cp.pixels.fill((0, 0, 0))
+        pixels_off()
+        print("[SYSTEM] Stopped.")
+    except Exception as e:
+        print("[SYSTEM] FATAL: %s" % str(e))
+        cp.pixels.fill((255, 0, 0))
         cp.pixels.show()
-        print("[SYSTEM] 👋 Goodbye!")
-    except Exception as fatal_err:
-        print("\n[SYSTEM] 💥 FATAL ERROR: %s" % str(fatal_err))
-        # Flash red to indicate an error
-        for _ in range(5):
-            cp.pixels.fill((255, 0, 0))
-            cp.pixels.show()
-            time.sleep(0.2)
-            cp.pixels.fill((0, 0, 0))
-            cp.pixels.show()
-            time.sleep(0.2)

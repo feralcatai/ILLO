@@ -1,230 +1,148 @@
-# 🛸 ILLO Quick Start Guide
+# ILLO Quick Start Guide — Kecksburg Festival Edition
 
-**Get your AI UFO companion flying in minutes!**
+**v3.0.0 | Single-routine festival build**
 
 ---
 
-## 📋 What You Need
+## What You Need
 
 - **Adafruit Circuit Playground Bluefruit** (nRF52840)
-- **CircuitPython 9.0.4** ([Download CPB UF2](https://circuitpython.org/board/circuitplayground_bluefruit/))
+- **CircuitPython 10.2.1** ([Download CPB UF2](https://circuitpython.org/board/circuitplayground_bluefruit/))
 - **USB-micro B cable** for programming
 - **USB-C cable** for power
-- **Computer** with file management capabilities
 - **Levitating UFO base** (compatible magnetic levitation platform)
-- **3D printed UFO enclosure** for integration
 
 ---
 
-## 🕹️ ILLO Operation
+## Installation
 
-### Universal Controls
-
-| Control                | Function                             | Works In All Routines |
-|------------------------|--------------------------------------|-----------------------|
-| **Button A**           | Cycle through routines (1→2→3→4→1)   | ✅ Yes                 |
-| **Button B**           | Cycle through modes (1→2→3→4→1)      | ✅ Yes                 |
-| **Slide Switch LEFT**  | Sound enabled (more power usage)     | ✅ Yes                 |
-| **Slide Switch RIGHT** | Sound disabled (longer battery)      | ✅ Yes                 |
-| **Touch/Tap**          | Interact with AI/wake up             | 🧠 AI Mode only       |
-| **Shake**              | Turbulence effects and energy bursts | 🧠 AI Mode only       |
-| **Wave Hand**          | Light sensor interaction             | 🧠 AI Mode only       |
-
-### Routine Selection (Button A)
-
-| Routine                        | Button A Value | Visual Indicator | Description                                     | Special Features                                                      |
-|--------------------------------|----------------|------------------|-------------------------------------------------|-----------------------------------------------------------------------|
-| **🧠 AI Intelligence**         | 1 (Default)    | 1 purple         | Interactive AI companion that learns and adapts | Touch/tap to wake AI, shake for turbulence, wave hand for interaction |
-| **🌌 Intergalactic Cruising**  | 2              | 2 green          | Ambient lighting with auto-brightness           | Bluetooth control via Adafruit Bluefruit Connect app                  |
-| **🧘 Meditate**                | 3              | 3 blue           | Relaxation breathing patterns (4 techniques)    | Interactions disabled, ultra-dim option available                     |
-| **🕺 Dance Party**             | 4              | 4 orange         | Advanced audio visualizer with multi-device sync | Frequency-based rotation, fade trails, BLE leader/follower synchronization |
-
-### Mode Settings for Each Routine (Button B)
-
-| Routine                       | Mode 1                                       | Mode 2                     | Mode 3                     | Mode 4                   |
-|-------------------------------|----------------------------------------------|----------------------------|----------------------------|--------------------------|
-| **🧠 AI Intelligence**        | Rainbow wheel                                | Pink colors                | Blue colors                | Green colors             |
-| **🌌 Intergalactic Cruising** | Rainbow wheel                                | Pink colors                | Blue colors                | Green colors             |
-| **🧘 Meditate**               | 4-7-8 breathing (inhale 4, hold 7, exhale 8) | Box breathing (4-4-4-4)    | Triangle breathing (4-4-8) | Deep relaxation          |
-| **🕺 Dance Party**            | Leader (audio visualizer + BLE broadcast)    | Follower (mirrors leader)  | Follower (mirrors leader)  | Follower (mirrors leader) |
+1. Flash CircuitPython 10.2.1 to the Circuit Playground Bluefruit
+   - Double-tap reset to enter bootloader, drag UF2 to `CPLAYBOOT`
+2. Copy all `.py` files to the root of `CIRCUITPY`
+3. Copy the `music/` folder to `CIRCUITPY`
+4. Copy the `lib/` folder to `CIRCUITPY`
+5. Eject and disconnect USB
 
 ---
 
-## ⚡ Battery & Power
+## Controls
 
-### Charging
+| Control | Function |
+|---|---|
+| **Slide Switch LEFT** | Sound enabled |
+| **Slide Switch RIGHT** | Sound disabled (longer battery) |
 
-- Use a USB-C cable to charge the CR123A battery
-
-### Power Management
-
-- ILLO automatically adjusts brightness based on ambient light to conserve battery
-- Slide switch controls sound (sound uses more power)
-- AI learning and memory features are optimized for minimal power consumption
-- Expected runtime: 5 hours
+There are no button controls in the Kecksburg Festival Edition — ILLO runs autonomously.
 
 ---
 
-## 🚀 Installation Steps
+## What ILLO Does
 
-### 1. Prepare Your Circuit Playground
+ILLO plays four UFO/sci-fi theme songs on a continuous loop with light shows and sensor reactivity.
 
-1. Connect Circuit Playground Bluefruit to your computer via USB-micro B
-2. **Flash CircuitPython 9.0.4 with ulab**:
-    - Download the UF2 file from CircuitPython.org
-    - Double-tap the reset button to enter bootloader mode
-    - Drag the UF2 file to the CPLAYBOOT drive that appears
-    - Wait for the device to restart
+### Song Rotation
 
-### 2. Install Required Libraries
+| # | Song | Repeats | Pause Between |
+|---|---|---|---|
+| 1 | Close Encounters | 3× | 5s |
+| 2 | X-Files Theme | 4× (A B A B) | 2s |
+| 3 | Star Trek Fanfare | 1× | — |
+| 4 | Also Sprach Zarathustra | 1× | — |
 
-Copy these libraries from the [Adafruit CircuitPython Bundle](https://circuitpython.org/libraries) to `CIRCUITPY/lib/`:
+30 seconds of ambient animation plays between each song in the rotation.
 
-### 3. Install ILLO Software
+### X-Files Alternating Riff
 
-1. Download all ILLO `.py` files from the repository
-2. Copy **all Python files** to the root of `CIRCUITPY`
-3. Copy `config.json` to `CIRCUITPY`
-4. Copy the entire `colleges/` folder to `CIRCUITPY`
-5. Safely eject and disconnect USB
+The X-Files theme alternates note 5 between E5 and G5 across its 4 repeats:
+- Plays 1 & 3: E5
+- Plays 2 & 4: G5
 
-### 4. First Boot
+### Theremin Trigger
 
-1. **Set the slide switch** to your preferred position:
-    - **LEFT** = Sound enabled
-    - **RIGHT** = Sound disabled (longer battery life)
-2. **Power on** - ILLO will start in AI Intelligence mode (rainbow colors)
-3. **Watch for the startup light sequence**—indicates a successful boot
+During the inter-song pause, sustained loud audio (≥1.5s above threshold) followed by silence fires the Theremin trigger — Close Encounters plays immediately as the next song regardless of rotation position.
 
----
+### Shadow Detection
 
-## 🎓 College Spirit Features
+When someone leans over ILLO (sudden ambient light drop), a ripple animation runs around the pixel ring with an ascending chirp if sound is enabled.
 
-### Built-in Penn State Support
+### Mic Reactivity
 
-- College team colors available in color mode 4
-- Team-specific color schemes and patterns
-- College pride displays when manually triggered
-
-### Adding Your Team
-
-1. Create a JSON file in the `colleges/` folder
-2. Define your team's colors and visual themes
-3. Update `college` field in `config.json`
-4. ILLO will automatically load your team's color schemes
-
-### ⚠️ Important: Chant Detection
-
-**DO NOT enable `college_chant_detection_enabled`** - this feature is disabled by default due to memory limitations.
-Enabling it may cause system instability or crashes.
+Pixel brightness lifts with ambient crowd volume during both songs and pause animations.
 
 ---
 
-## 🕺 Dance Party Multi-Device Sync
+## Serial Monitor Output
 
-### Leader/Follower Architecture
+Connect via USB and open a serial terminal (115200 baud) to see status output:
 
-Dance Party mode features an advanced audio visualizer with BLE synchronization:
+```
+[SYSTEM] ILLO v3.0.0 - Kecksburg Festival Edition
+[SYSTEM] Loaded: Close Encounters
+[MEM] 114000 bytes free
+...
+[MUSIC] Playing: X-Files Theme at 40 BPM
+[MUSIC] Repeat 1/4 — pausing 2s
+[MEM] 112000 bytes free
+[LIGHT] Shadow detected — ripple!
+[MIC] Sustained audio detected — arming trigger
+[MIC] Trigger armed — waiting for silence
+[MIC] Theremin trigger fired — queuing Close Encounters
+```
 
-**Leader Mode (Mode 1):**
-- Analyzes audio frequency in real-time
-- Displays rotating pixel patterns based on detected frequency
-- Fade/persistence effects create smooth visual trails
-- Broadcasts visual state to followers via BLE (12.5 times per second)
-- Falls back to idle comet animation when no audio detected
-
-**Follower Modes (Modes 2-4):**
-- Scans for leader BLE advertisements
-- Mirrors leader's visual display in near real-time
-- Smoothed transitions for natural-looking synchronization
-- Automatic leader loss detection and recovery
-- No audio processing required (silent operation)
-
-### Responsiveness Tuning
-
-Adjust sync performance using preset modes (requires code modification):
-
-1. Switch to **Intergalactic Cruising mode** (Button A until Routine 2)
-2. Open **Adafruit Bluefruit Connect** app on your phone
-3. Look for a device named **ILLO_x** (where x is your device name)
-4. Connect via **UART** feature
-
-### Commands
-
-Send text commands via UART to control ILLO remotely:
-
-- Override brightness and color settings
-- Change lighting patterns
-- Sync multiple ILLOs together
+**Memory health guide:**
+- > 20KB free — normal operation
+- < 20KB free — consider reducing song count
+- < 5KB free — critical, likely to crash
 
 ---
 
-## ⚙️ First-Time Configuration
+## Tuning Constants
 
-### Essential Settings (config.json)
+All field-adjustable thresholds are constants at the top of `code.py`:
 
-Open `config.json` on your computer to customize:
-
-"name": "ILLO_1", // Change to personalize your ILLO
-"routine": 1, // Default mode (1-4)
-"mode": 1, // Default color mode (1-4)
-"bluetooth_enabled": true, // Enable Bluetooth (Intergalactic Cruising mode)
-"college_spirit_enabled": true, // Enable team colors
-"college": "penn_state", // Your team
-"ufo_persistent_memory": true, // AI learns and remembers
-"meditate_adaptive_timing": true,
-"meditate_ultra_dim": true,
-"college_chant_detection_enabled": false // KEEP THIS FALSE - memory intensive
+| Constant | Default | Description |
+|---|---|---|
+| `PAUSE_BETWEEN_SONGS` | 30.0s | Ambient pause between songs |
+| `CLOSE_ENCOUNTERS_REPEATS` | 3 | How many times the motif plays |
+| `CLOSE_ENCOUNTERS_REPEAT_PAUSE` | 5.0s | Pause between CE repeats |
+| `XFILES_REPEATS` | 4 | X-Files repeat count |
+| `XFILES_REPEAT_PAUSE` | 2.0s | Pause between X-Files repeats |
+| `MIC_AMBIENT_FLOOR` | 50 | Sound level below this = silence |
+| `MIC_THEREMIN_THRESHOLD` | 200 | Level that counts as Theremin playing |
+| `MIC_THEREMIN_DURATION` | 1.5s | Sustained audio needed to arm trigger |
+| `MIC_SILENCE_DURATION` | 0.8s | Silence needed to fire trigger |
+| `LIGHT_SHADOW_THRESHOLD` | 40 | Light drop that counts as a shadow |
 
 ---
 
-### Memory & Storage Modes
-**USB Connection Behavior:**
-- : Testing mode (read-only protection) **Slide LEFT + USB**
-- : Development mode (read/write access) **Slide RIGHT + USB**
-- **No USB**: Full read/write operation with AI memory saving
+## Adding or Editing Songs
 
-## 🔧 Troubleshooting
-### ILLO Won't Start
-- ✅ Check CircuitPython 9.0.4 is installed
-- ✅ Verify all required libraries are in folder `lib/`
-- ✅ Ensure all files are in the root directory `.py`
-- ✅ Check that has valid JSON syntax `config.json`
+Songs live in the `music/` directory as JSON files. All songs use BPM + sixteenth-note duration encoding:
 
-### No Lights/Dim Lights
-- 💡 ILLO auto-adjusts brightness—try different lighting conditions
-- 💡 Check battery level if using battery power
-- 💡 Wave hand over device to trigger interaction
-- 💡 Try pressing Button B to cycle color modes
+```json
+{
+    "name": "My Song",
+    "bpm": 120,
+    "colors": {
+        "primary": [R, G, B],
+        "secondary": [R, G, B]
+    },
+    "notes": [
+        [frequency_hz, duration_in_sixteenths],
+        [0, 4]
+    ]
+}
+```
 
-### AI Not Responding
-- 🤖 Tap the center of the Circuit Playground to wake AI
-- 🤖 Shake gently to trigger turbulence response
-- 🤖 Check that you're not in Meditate mode (interactions disabled)
-- 🤖 Ensure is enabled in config `ufo_persistent_memory`
+- Frequency `0` = rest
+- Duration is in sixteenth notes: 4 = quarter note, 8 = half note, 16 = whole note
+- Songs with alternating variants use `notes_a` and `notes_b` instead of `notes`
 
-### Memory Issues
-- 🧠 Ensure is set to `false` `college_chant_detection_enabled`
-- 🧠 Set debug options to `false` to free up memory
-- 🧠 Reset device if behavior becomes erratic
+To add a song to the rotation, add its path to `SONG_FILES` in `code.py`.
 
-### System Crashes/Instability
-- ⚠️ **Most common cause**: set to `true` `college_chant_detection_enabled`
-- ⚠️ Verify this setting is `false` in `config.json`
-- ⚠️ Power cycle device after making config changes
+---
 
-## 📚 Next Steps
-- **Full Configuration**: See for complete settings `ILLO_Device_Configuration_Guide.md`
-- **Bluetooth Guide**: Check for advanced BLE features `ILLO_Bluetooth_Control_Guide.md`
-- **Add Your College**: Create custom team color files in the directory `colleges/`
-- **Experiment**: Try different combinations of modes, colors, and interactions
+## Battery
 
-## 🌟 Pro Tips
-- **Night Light**: Use Intergalactic Cruising mode with sound off for perfect ambient lighting
-- **Meditation**: Try the 4-7-8 breathing pattern for stress relief
-- **Music Fun**: Dance Party mode works best with steady beat music
-- : Multiple ILLOs can sync their light shows via Bluetooth **Multi-ILLO**
-- **Battery Life**: Sound-off modes significantly extend operating time
-- **Memory Conservation**: Keep all audio detection features disabled for the best performance
-
-**Welcome to the ILLO family! Your AI UFO companion is ready to learn, adapt, and become your unique levitating friend.**
+- Expected runtime: ~5 hours with sound enabled, longer with sound off
+- ILLO auto-adjusts pixel brightness to ambient light to conserve power

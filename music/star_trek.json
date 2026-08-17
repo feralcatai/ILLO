@@ -1,0 +1,19 @@
+{
+    "name": "Star Trek Fanfare",
+    "description": "TOS fanfare — stacked fourths: A4 D5 G5 C6 F5 Bb5 Eb6 A5",
+    "bpm": 60,
+    "colors": {
+        "primary": [255, 200, 0],
+        "secondary": [0, 100, 255]
+    },
+    "notes": [
+        [440,    4],
+        [587,    4],
+        [784,    4],
+        [1047,   6],
+        [698,    2],
+        [932,    4],
+        [1245,   4],
+        [880,   24]
+    ]
+}
