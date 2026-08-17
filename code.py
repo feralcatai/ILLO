@@ -27,7 +27,17 @@ Author:
     Charles Doebler at Feral Cat AI
 
 Version:
-    3.0.0 - Kecksburg Festival Edition
+    2.0.3 - Production Release
+
+Dependencies:
+    - adafruit_circuitplayground
+    - config_manager, memory_manager, interaction_manager (local)
+    - Routine-specific modules (lazy loaded)
+
+Note:
+    - Routine switching triggers automatic reboot for clean memory state
+    - Debug flags control verbosity across subsystems
+    - Volume parameter is boolean sound enable, not actual volume control
 """
 
 from adafruit_circuitplayground import cp
@@ -35,7 +45,8 @@ import time
 import json
 import gc
 
-VERSION = "3.0.0"
+# Version tracking
+VERSION = "2.0.3"
 
 # Songs to play in rotation (loaded from music/ directory)
 SONG_FILES = [

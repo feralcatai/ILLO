@@ -83,6 +83,19 @@ class CollegeManager:
         if not self.college_data:
             return []
         return self.college_data["fight_song"]["notes"]
+
+    def get_chant_mp3(self):
+        """Get optional MP3 file path for the chant, if defined in the college JSON."""
+        if not self.college_data:
+            return None
+        chant_data = self.college_data.get("chants", {}).get("primary", {})
+        return chant_data.get("mp3_file")
+
+    def get_fight_song_mp3(self):
+        """Get optional MP3 file path for the fight song, if defined in the college JSON."""
+        if not self.college_data:
+            return None
+        return self.college_data.get("fight_song", {}).get("mp3_file")
     
     def get_response_tone(self, tone_type="chant_response"):
         """Get audio tone for specific response type."""
