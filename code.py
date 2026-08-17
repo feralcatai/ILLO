@@ -31,7 +31,7 @@ Author:
     Charles Doebler at Feral Cat AI
 
 Version:
-    2.0.1 - Production Release
+    2.0.3 - Production Release
 
 Dependencies:
     - adafruit_circuitplayground
@@ -62,7 +62,7 @@ import microcontroller
 import os
 
 # Version tracking
-VERSION = "2.0.2"
+VERSION = "2.0.3"
 
 # Debug Configuration - Set these flags to enable debug output
 debug_bluetooth = False
