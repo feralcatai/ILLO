@@ -1,9 +1,9 @@
 [project]
 name = "illo"
-version = "3.0.0"
-description = "Levitating UFO Companion — Kecksburg Festival Edition"
+version = "2.0.3"
+description = "Levitating UFO Companion"
 authors = [
-    {name = "Charles Doebler", email = "charles@feralcatai.com"}
+    {name = "Charles Doebler", email = "charles.doebler@feralcatai.com"}
 ]
 license = {text = "MIT"}
 readme = "README.md"
@@ -117,8 +117,7 @@ addopts = "-v --tb=short"
 
 # Version history - Production Release
 [changelog]
-"3.0.0" = "Kecksburg Festival Edition: single-routine song player with mic/light reactivity, theremin trigger, shadow detection, serial memory reporting, and four UFO/sci-fi theme songs"
-"2.0.3" = "Removed outdated michigan.json college file, updated documentation references"
+"2.0.3" = "Added single-routine song player"
 "2.0.2" = "Added automated deployment package builder and GitHub Actions for releases, improved serial monitor with dynamic port selection"
 "2.0.1" = "Initial production release - Complete AI companion with levitation integration, sustainable manufacturing"
 "1.0.0" = "Initial development release with basic UFO behaviors and audio visualization"
