@@ -267,7 +267,7 @@ Build everything yourself using open source files:
 
 - 💬 [Open an Issue](https://github.com/feralcatai/ILLO/issues)
 - 🌐 Visit [feralcatai.com](https://feralcatai.com)
-- 📧 Email: charles@feralcatai.com
+- 📧 Email: charles.doebler@feralcatai.com
 
 ---
 
