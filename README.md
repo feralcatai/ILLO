@@ -11,6 +11,8 @@ while gracefully hovering in midair.
 
 **🎓 [STEM Kit Available](https://feralcatai.com) | 📚 [Full Documentation](https://feralcatai.github.io/ILLO/) | 🛠️ [Open Source DIY](https://makerworld.com/en/models/2034343-illo-intelligent-levitating-ufo-companion#profileId-2194168)**
 
+**⬇️ [Download the latest CircuitPython deployment package](https://github.com/feralcatai/ILLO/releases/latest/download/ILLO-CircuitPython-latest.zip)** — always the newest release, no version-hunting required.
+
 ---
 
 ## 🏠 Perfect For...

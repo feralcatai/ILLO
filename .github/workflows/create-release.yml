@@ -50,6 +50,10 @@ jobs:
         run: |
           python tools/create_deployment_package.py
 
+      - name: Create stable-named copy for permanent download link
+        run: |
+          cp dist/ILLO-CircuitPython-v${{ steps.get_version.outputs.version }}.zip dist/ILLO-CircuitPython-latest.zip
+
       - name: Upload deployment package as artifact
         uses: actions/upload-artifact@v4
         with:
@@ -93,6 +97,9 @@ jobs:
 
             For detailed instructions, see the included `DEPLOYMENT_README.txt`
 
+            **Permanent download link** (always points to the latest release, no need to hunt for the right version):
+            https://github.com/feralcatai/ILLO/releases/latest/download/ILLO-CircuitPython-latest.zip
+
             ## Documentation
 
             - 📚 [Full Documentation](https://feralcatai.github.io/ILLO/)
@@ -104,6 +111,7 @@ jobs:
             Found a bug or need help? [Open an issue](https://github.com/feralcatai/ILLO/issues)
           files: |
             dist/ILLO-CircuitPython-v${{ steps.get_version.outputs.version }}.zip
+            dist/ILLO-CircuitPython-latest.zip
           draft: false
           prerelease: false
         env:
