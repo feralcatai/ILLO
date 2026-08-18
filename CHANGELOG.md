@@ -5,32 +5,24 @@ All notable changes to the ILLO project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
 ## [2.0.3] - 2026-08-17
 
-### Added
-- `AGENTS.md` — quick-orientation guide for AI coding agents
-- CircuitPython 10.2.1 firmware binary added to `firmware/`
-- **Kecksburg Festival Edition** — complete rewrite of `code.py` as a single-routine festival build
-  - Plays four UFO/sci-fi theme songs in rotation: Close Encounters, X-Files, Star Trek Fanfare, Also Sprach Zarathustra
-  - Mic-reactive brightness during both songs and inter-song pauses
-  - Shadow detection: sudden ambient light drop triggers a ripple animation
-  - Theremin trigger: sustained audio followed by silence immediately queues Close Encounters
-  - Rotating scan animation during inter-song pauses
-  - Serial memory reporting (`[MEM]`) after each song load and each playback cycle
-- `music/` directory with song JSON files (BPM + sixteenth-note encoding)
-  - `close_encounters.json` — five-note motif, plays 3× with 5s pauses
-  - `xfiles.json` — main riff with alternating E5/G5 on note 5, plays 4× (A B A B)
-  - `star_trek.json` — TOS fanfare, stacked fourths at BPM 60
-  - `also_sprach.json` — opening motif
-
 ### Changed
-- Updated target/tested CircuitPython firmware to 10.2.1 for the Circuit Playground Bluefruit
-- Synced version to 2.0.3 across `CLAUDE.md`, `AGENTS.md`, `project.toml`, and `CHANGELOG.md`
-- Removed `docs/build/` from git tracking (already gitignored)
+- Reverted the experimental "Kecksburg Festival Edition" rewrite (attempted as 3.0.0)
+  — the single-routine song player never worked correctly on hardware
+- Restored the known-good v2.0.2 codebase (UFO Intelligence, Intergalactic Cruising,
+  Meditate, and Dance Party routines) as the current release
+- Corrected the author email typo (`charles@feralcatai.com` →
+  `charles.doebler@feralcatai.com`) across `project.toml`, `README.md`,
+  `docs/ILLO_Assembly_Guide.md`, and `docs/source/index.rst`
 
-## [2.0.2] - 2025-01-27
+## [2.0.2] - 2025-11-28
+
+### Added
+- Automated deployment package builder and GitHub Actions for releases
+- Serial monitor with dynamic port selection
+
+## [2.0.1] - 2025-01-27
 
 ### Added
 - Comprehensive module-level docstrings for API documentation
@@ -39,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Better structured API documentation index
 
 ### Changed
-- Updated all version strings to 2.0.2 for consistency
+- Updated all version strings to 2.0.1 for consistency
 - Enhanced documentation configuration in docs/source/conf.py
 - Improved docs/source/index.rst with complete project overview
 

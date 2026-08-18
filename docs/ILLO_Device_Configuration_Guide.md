@@ -335,43 +335,12 @@ The slide switch position during boot determines the device's operational mode:
 - Memory-efficient BLE protocol (advertisement names only)
 - Top 3 brightest pixels encoded for efficient transmission
 
-## 🏭 Factory Reset
+## Sustainability
 
-### Overview
+### Environmental & Manufacturing
 
-Factory reset restores ILLO to its original default configuration by deleting user data files. This feature is useful for troubleshooting, transferring ownership, or starting fresh.
-
-### Activation Method
-
-**Button Combination at Boot:**
-- Hold **Button A + Button B** simultaneously during power-on
-- Continue holding for **3 seconds** until confirmation
-- Visual feedback guides the process
-
-### Visual Feedback Sequence
-
-| Stage             | LED Pattern                 | Meaning                     | Action                 |
-|-------------------|-----------------------------|-----------------------------|-----------------------|
-| **Detection**     | Pulsing red (slow)          | Combo detected              | Keep holding          |
-| **Countdown**     | Pulsing red (intensifying)  | 3-second confirmation timer | Keep holding          |
-| **Confirmation**  | Three green flashes         | Reset successful            | Release buttons       |
-| **Cancellation**  | LEDs turn off               | Buttons released too early  | No changes made       |
-| **USB Error**     | Yellow flashing             | USB connected (read-only)   | Unplug USB, try again |
-| **System Error**  | Red flashing                | Reset failed                | Power cycle, retry    |
-
-### Files Affected
-
-**Deleted:**
-- ✅ `config.json` - All user settings and preferences
-- ✅ `ufo_memory.json` - AI personality, learning data, and interaction history
-
-**Preserved:**
-- ❌ `code.py` - Main application code
-- ❌ `*.py` - All Python modules and libraries
-- ❌ `colleges/*.json` - College team data files
-- ❌ `lib/` - CircuitPython libraries
-- ❌ Firmware - CircuitPython runtime unchanged
-
-### Default Configuration Restored
-
-After factory reset, `config.json` will be recreated with these defaults:
+- **Enclosure**: 3D printed from recycled PETG plastic
+- **Made in the USA** with domestic components where possible
+- **Energy-efficient algorithms** for extended battery life
+- **Sustainable design practices** throughout development
+- **Open source** to extend the product lifecycle and reduce e-waste

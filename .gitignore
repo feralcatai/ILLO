@@ -11,7 +11,6 @@ docs/build/
 venv/
 env/
 ENV/
-.venv/
 
 # Build artifacts
 dist/

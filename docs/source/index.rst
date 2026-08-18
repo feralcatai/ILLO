@@ -39,7 +39,7 @@ Hardware Requirements
 ---------------------
 
 * **Board**: Adafruit Circuit Playground Bluefruit (nRF52840)
-* **Firmware**: CircuitPython 10.2.1+ (tested with 10.2.1)
+* **Firmware**: CircuitPython 9.0.4+ (tested with 10.0.1)
 * **RAM**: 256KB (requires careful memory management)
 * **Storage**: 2MB flash for code and libraries
 * **Features**: 10 NeoPixels, accelerometer, microphone, light sensor, BLE 5.0
@@ -47,7 +47,7 @@ Hardware Requirements
 Quick Start
 -----------
 
-1. Flash CircuitPython 10.2.1 or later to your Circuit Playground Bluefruit
+1. Flash CircuitPython 9.0.4 or later to your Circuit Playground Bluefruit
 2. Copy all ``.py`` files and the ``lib/`` directory to the CIRCUITPY drive
 3. Copy ``config.json`` to configure your preferred mode and settings
 4. Power on and enjoy! Button A cycles routines, Button B cycles modes
@@ -163,7 +163,7 @@ Support
 
 * **Repository**: https://github.com/feralcatai/ILLO
 * **Issues**: https://github.com/feralcatai/ILLO/issues
-* **Email**: charles@feralcatai.com
+* **Email**: charles.doebler@feralcatai.com
 * **Website**: https://feralcatai.com
 
 License

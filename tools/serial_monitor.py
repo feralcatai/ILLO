@@ -3,8 +3,6 @@ import serial.tools.list_ports
 import time
 import threading
 import sys
-import select
-import signal
 
 class CircuitPlaygroundSerial:
     def __init__(self, port=None, baudrate=115200):
@@ -105,9 +103,9 @@ class CircuitPlaygroundSerial:
         """Start monitoring serial output"""
         if not self.connect():
             return
-
+            
         self.running = True
-
+        
         def read_serial():
             while self.running:
                 try:
@@ -121,31 +119,24 @@ class CircuitPlaygroundSerial:
                 except UnicodeDecodeError:
                     # Skip lines that can't be decoded
                     pass
-                except Exception:
-                    # Ignore other exceptions during shutdown
-                    if self.running:
-                        raise
                 time.sleep(0.01)
-
+        
         # Start reading in a separate thread
         read_thread = threading.Thread(target=read_serial, daemon=True)
         read_thread.start()
-
-        print("Serial monitor started. Press Ctrl+C to stop, or type 'exit'/'quit'/'stop' to exit:")
-
+        
+        print("Serial monitor started. Press Ctrl+C to stop, or type commands:")
+        
         try:
             while self.running:
-                try:
-                    # Use simple input() which properly handles Ctrl+C
-                    user_input = input()
-                    if user_input.lower() in ['exit', 'quit', 'stop']:
-                        break
-                    elif user_input and self.serial_connection:
-                        self.serial_connection.write((user_input + '\r\n').encode())
-                except EOFError:
-                    # Handle EOF (Ctrl+D on Unix, Ctrl+Z on Windows)
+                # Allow sending commands to the device
+                user_input = input()
+                if user_input.lower() in ['exit', 'quit', 'stop']:
                     break
-
+                elif user_input and self.serial_connection:
+                    # Send command to Circuit Playground (triggers REPL if needed)
+                    self.serial_connection.write((user_input + '\r\n').encode())
+                    
         except KeyboardInterrupt:
             print("\nStopping serial monitor...")
         finally:

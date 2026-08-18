@@ -34,7 +34,6 @@ class UFOIntelligence(BaseRoutine):
 
         # Load configuration using ConfigManager consistently
         self.chant_detection_enabled = self._load_chant_detection_setting()
-        self._mp3_playback_enabled = self._load_mp3_playback_setting()
 
         # Audio-reactive light pattern state
         self.light_pattern_state = {}
@@ -77,18 +76,6 @@ class UFOIntelligence(BaseRoutine):
             print("[UFO AI] Config load error: %s" % str(e))
             return False  # Default to disabled for safety
 
-    @staticmethod
-    def _load_mp3_playback_setting():
-        """Load MP3 playback setting using ConfigManager consistently."""
-        try:
-            from config_manager import ConfigManager
-            config_mgr = ConfigManager()
-            config = config_mgr.load_config()
-            return config.get('mp3_playback_enabled', False)
-        except Exception as e:
-            print("[UFO AI] Config load error: %s" % str(e))
-            return False  # Default to disabled for safety
-
     def _initialize_subsystems(self):
         """Initialize AI subsystems with lazy loading and error handling."""
         try:
@@ -106,8 +93,7 @@ class UFOIntelligence(BaseRoutine):
             if not self.college_system:
                 from ufo_college_system import UFOCollegeSystem
                 self.college_system = UFOCollegeSystem(self._college_spirit_enabled,
-                                                       self._college,
-                                                       self._mp3_playback_enabled)
+                                                       self._college)
                 if self._college_spirit_enabled:
                     print("[UFO AI] ✅ College system initialized (enabled)")
                 else:

@@ -189,7 +189,7 @@ Your ILLO UFO is now assembled! Continue with:
 ## Need Help?
 
 - 💬 [Open an Issue](https://github.com/feralcatai/ILLO/issues)
-- 📧 Email: [charles@feralcatai.com](mailto:charles@feralcatai.com)
+- 📧 Email: [charles.doebler@feralcatai.com](mailto:charles.doebler@feralcatai.com)
 - 🌐 Visit [feralcatai.com](https://feralcatai.com)
 
 ---

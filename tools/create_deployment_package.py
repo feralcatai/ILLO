@@ -7,7 +7,7 @@ This package includes all Python files, libraries, configuration, and college da
 Usage:
     python tools/create_deployment_package.py
     python tools/create_deployment_package.py --output dist/illo-deploy.zip
-    python tools/create_deployment_package.py --version 2.0.1
+    python tools/create_deployment_package.py --version 2.0.3
 """
 
 import os
@@ -198,7 +198,7 @@ TROUBLESHOOTING:
 ----------------
 If the device doesn't start:
 1. Check that CIRCUITPY drive is writable (disconnect USB, reconnect)
-2. Verify CircuitPython firmware is 10.2.1 or newer
+2. Verify CircuitPython firmware is 9.0.4 or newer
 3. Check serial output for error messages
 
 For support, visit: https://github.com/feralcatai/ILLO/issues

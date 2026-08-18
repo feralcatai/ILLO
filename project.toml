@@ -1,25 +1,33 @@
 [project]
 name = "illo"
 version = "2.0.3"
-description = "Levitating UFO Companion"
+description = "AI-Powered Levitating UFO Companion with Smart Environmental Sensing"
 authors = [
     {name = "Charles Doebler", email = "charles.doebler@feralcatai.com"}
 ]
 license = {text = "MIT"}
 readme = "README.md"
 keywords = [
-    "circuitpython",
-    "iot",
-    "led",
+    "circuitpython", 
+    "ai", 
+    "iot", 
+    "led", 
+    "bluetooth", 
     "adafruit",
     "music",
+    "interactive",
+    "college",
     "embedded",
     "light-sensing",
+    "environmental",
     "ufo",
+    "companion",
     "levitating",
     "magnetic-levitation",
-    "festival",
-    "made-in-usa"
+    "sustainable",
+    "made-in-usa",
+    "recycled-petg",
+    "production-ready"
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -51,18 +59,20 @@ documentation = "https://feralcatai.github.io/ILLO/"
 "Bug Reports" = "https://github.com/feralcatai/ILLO/issues"
 "Source" = "https://github.com/feralcatai/ILLO"
 "Changelog" = "https://github.com/feralcatai/ILLO/releases"
-"Quick Start Guide" = "https://github.com/feralcatai/ILLO/blob/main/docs/ILLO_Quick_Start_Guide.md"
-"Assembly Guide" = "https://github.com/feralcatai/ILLO/blob/main/docs/ILLO_Assembly_Guide.md"
-"Configuration Guide" = "https://github.com/feralcatai/ILLO/blob/main/docs/ILLO_Device_Configuration_Guide.md"
-"Bluetooth Control Guide" = "https://github.com/feralcatai/ILLO/blob/main/docs/ILLO_Bluetooth_Control_Guide.md"
+"Product Guide" = "https://github.com/feralcatai/ILLO/blob/main/docs/ILLO_AIPoweredUFOEnhancedCompanion.md"
+"Configuration Guide" = "https://github.com/feralcatai/ILLO/blob/main/docs/config_readme.txt"
 
 # CircuitPython specific configuration - Production Ready
 [tool.circuitpython]
 target_board = "circuitplayground_bluefruit"
 main_file = "code.py"
-firmware_version = "10.2.1"
+firmware_version = "10.0.1"
 required_libraries = [
+    "adafruit_ble",
+    "adafruit_bluefruit_connect",
     "adafruit_circuitplayground",
+    "adafruit_lis3dh.mpy",
+    "adafruit_thermistor.mpy",
     "neopixel",
     "simpleio"
 ]
@@ -71,7 +81,7 @@ required_libraries = [
 [hardware]
 board = "Adafruit Circuit Playground Bluefruit"
 processor = "ARM Cortex-M4 64MHz (nRF52840)"
-circuitpython_version = ">=10.2.1"
+circuitpython_version = ">=9.0.4"
 flash_memory = "2MB"
 ram_memory = "256KB"
 platform = "magnetic_levitation_ufo"
@@ -90,20 +100,96 @@ features = [
     "magnetic_levitation_compatible"
 ]
 
-# Kecksburg Festival Edition — single-routine song player
-[festival_edition]
-mode = "single_routine"
-songs = [
-    "close_encounters",
-    "xfiles",
-    "star_trek",
-    "also_sprach"
+# Complete Operating Modes - All Implemented
+[modes]
+default_mode = "ufo_intelligence"
+available_modes = [
+    "ufo_intelligence",      # AI-powered adaptive companion
+    "intergalactic_cruising", # Ambient sci-fi with light sensing
+    "meditate",              # Breathing patterns for mindfulness
+    "dance_party"            # Music-reactive light shows
 ]
-song_encoding = "bpm_plus_sixteenth_notes"
-mic_reactivity = true
-shadow_detection = true
-theremin_trigger = true
-serial_memory_reporting = true
+
+# Advanced AI System - Production Complete
+[ai_system]
+learning_enabled = true
+memory_persistence = true
+personality_development = true
+interaction_tracking = true
+college_integration = true
+environmental_sensing = true
+adaptive_behaviors = true
+attention_seeking = true
+mood_management = true
+trust_building = true
+autonomous_responses = true
+flash_wear_protection = true
+
+# Smart Light Management System - Complete
+[light_system]
+adaptive_brightness = true
+brightness_range = "2%-25%"
+light_interactions = true
+environmental_response = true
+smooth_transitions = true
+automatic_dimming = true
+night_light_mode = true
+interaction_detection = true
+ambient_monitoring = true
+battery_conservation = true
+
+# Advanced Music System - Complete
+[music_system]
+chant_detection = true
+fight_song_recognition = true
+beat_synchronization = true
+college_colors = true
+tempo_matching = true
+synchronized_lighting = true
+real_time_fft_analysis = true
+16th_note_precision = true
+bpm_detection = true
+audio_reactive_patterns = true
+
+# College Integration System - Complete
+[college_system]
+supported_colleges = ["penn_state"]
+expandable_architecture = true
+color_schemes = true
+chant_recognition = true
+fight_songs = true
+spirit_tracking = true
+team_loyalty_development = true
+random_pride_displays = true
+json_configuration = true
+
+# Sustainable Manufacturing - Production
+[sustainability]
+enclosure_material = "100_percent_recycled_petg"
+manufacturing_location = "usa"
+domestic_components = "where_possible"
+energy_efficient_algorithms = true
+extended_battery_life = true
+open_source_lifecycle = true
+e_waste_reduction = true
+quality_craftsmanship = true
+
+# Memory Management - Optimized for 256KB RAM
+[memory_management]
+garbage_collection = "automatic"
+memory_optimization = "circuitpython_256kb"
+safe_fallback_modes = true
+efficient_data_structures = true
+configurable_persistence = true
+flash_wear_protection = true
+real_time_performance = "60fps_target"
+
+# Production Environment Features
+[environment]
+boot_configurations = ["development", "testing", "operation"]
+debug_modes = ["bluetooth", "audio", "memory"]
+storage_modes = ["usb_readwrite", "local_storage", "hybrid"]
+safety_features = ["memory_limits", "error_recovery", "graceful_degradation"]
 
 # Development tools - Complete
 [tool.black]
@@ -117,7 +203,7 @@ addopts = "-v --tb=short"
 
 # Version history - Production Release
 [changelog]
-"2.0.3" = "Added single-routine song player"
+"2.0.3" = "Reverted the experimental Kecksburg Festival Edition rewrite (attempted as 3.0.0); restored the known-good v2.0.2 codebase"
 "2.0.2" = "Added automated deployment package builder and GitHub Actions for releases, improved serial monitor with dynamic port selection"
 "2.0.1" = "Initial production release - Complete AI companion with levitation integration, sustainable manufacturing"
 "1.0.0" = "Initial development release with basic UFO behaviors and audio visualization"

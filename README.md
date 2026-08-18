@@ -189,7 +189,7 @@ Not just pre-programmed responses—ILLO actually learns:
 **Easy Setup in 3 Steps:**
 
 1. **Flash the Firmware** (5 minutes)
-    - Download CircuitPython 10.2.1 from CircuitPython.org
+    - Download CircuitPython 9.0.4 from CircuitPython.org
     - Drag & drop onto your Circuit Playground Bluefruit
 
 2. **Install ILLO** (2 minutes)
@@ -203,9 +203,6 @@ Not just pre-programmed responses—ILLO actually learns:
 **📚 Documentation:**
 - [Complete API Documentation](https://feralcatai.github.io/ILLO/) - Full technical reference
 - [Quick Start Guide](docs/ILLO_Quick_Start_Guide.md) - Step-by-step setup
-- [Assembly Guide](docs/ILLO_Assembly_Guide.md) - Hardware assembly instructions (in progress)
-- [USB Security Guide](docs/USB_Security_Guide.md) - Security implications and best practices
-- [Factory Reset](docs/ILLO_Quick_Start_Guide.md#-factory-reset) - Restore to factory defaults
 
 ---
 
@@ -256,11 +253,7 @@ Build everything yourself using open source files:
 
 - 📚 **[Complete API Documentation](https://feralcatai.github.io/ILLO/)** - Full technical reference
 - 📖 [Quick Start Guide](docs/ILLO_Quick_Start_Guide.md) - Setup in minutes
-- 🔧 [Assembly Guide](docs/ILLO_Assembly_Guide.md) - Hardware assembly (in progress)
 - ⚙️ [Configuration Guide](docs/ILLO_Device_Configuration_Guide.md) - Customize everything
-- 📡 [Bluetooth Control Guide](docs/ILLO_Bluetooth_Control_Guide.md) - Remote control setup
-- 🔒 [USB Security Guide](docs/USB_Security_Guide.md) - Security and data protection
-- 🏭 [Factory Reset](docs/ILLO_Quick_Start_Guide.md#-factory-reset) - Restore factory defaults
 - 🎓 [Add Your College](colleges/(college).json) - Penn State included, yours next
 
 **Have Questions?**

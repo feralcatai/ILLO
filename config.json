@@ -8,7 +8,5 @@
   "ufo_persistent_memory": true,
   "meditate_adaptive_timing": true,
   "meditate_ultra_dim": true,
-  "college_chant_detection_enabled": false,
-  "mp3_playback_enabled": false,
-  "_mp3_file_example": "set chants.primary.mp3_file (or fight_song.mp3_file) in colleges/<name>.json, e.g. sounds/close_encounters_chant.mp3 - unused by ConfigManager, documentation only"
+  "college_chant_detection_enabled": false
 }
